@@ -1,0 +1,138 @@
+.pmn-cart-main-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 100px; /* Bach may-t-khba-ch te7t navbar */
+    background-color: #f9f9f9;
+}
+
+.pmn-cart-section-container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    max-width: 1200px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.pmn-cart-header-title {
+    width: fit-content;
+    cursor: pointer;
+    margin-bottom: 30px;
+}
+
+.pmn-cart-header-title h2 {
+    font-size: 2.5rem;
+    color: #1a1a2e;
+    font-weight: bold;
+    margin: 0;
+}
+
+.pmn-cart-header-title hr {
+    width: 30%;
+    border: none;
+    background-color: #4d3087;
+    height: 0.4rem;
+    transition: .3s ease-in;
+    margin-top: 5px;
+}
+
+.pmn-cart-header-title:hover hr {
+    width: 100%;
+}
+
+.pmn-cart-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.pmn-cart-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.pmn-cart-data-table thead {
+    background-color: #4d3087;
+    color: #fff;
+}
+
+.pmn-cart-data-table th {
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.pmn-cart-data-table tbody td {
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    padding: 20px 10px;
+    color: #333;
+}
+
+.pmn-cart-item-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.pmn-cart-qty-input {
+    width: 60px;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Footer Section */
+.pmn-cart-bottom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.pmn-cart-summary-card {
+    padding: 25px;
+    background-color: #4d3087;
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(77, 48, 135, 0.2);
+}
+
+.pmn-cart-summary-card h5 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 10px;
+}
+
+.pmn-cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.pmn-cart-btn-checkout {
+    width: 100%;
+    padding: 15px;
+    background-color: #e4b946;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.pmn-cart-btn-checkout:hover {
+    background-color: #c4992d;
+    transform: translateY(-2px);
+}
