@@ -3,58 +3,59 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Image;
 use App\Models\Design;
 use App\Models\Produit;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
-    // 1. عرض المنتجات (باش تخدم الـ Mockup fo9hom)
     public function getProductsByCat($cat)
     {
-        // كيجيب المنتجات الخام (Raw) اللي غادي نحطو فوقهم الديزاين
         $products = Produit::where('categorie_produit', $cat)->get();
         return response()->json($products);
     }
 
-    // 2. الـ Upload ديال الديزاين (Logo)
-    public function uploadDesign(Request $request)
-    {
+  public function uploadDesign(Request $request) 
+{
+    try {
         $request->validate([
-            'image' => 'required|image|mimes:png|max:2048', // ضروري PNG باش تبقى الشفافية
-            'categorie' => 'required'
+           'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:7983',
+            'id_utilisateur' => 'required' 
         ]);
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             
-            // تسجيل ف جدول images
-            $img = Image::create([
-                'nom_image' => $file->getClientOriginalName()
-            ]);
-
-            // تسمية التصويرة بـ ID ديالها باش ما يتلفوش
-            $nom_final = $img->id_image . ".png";
-            $img->update(['nom_image' => $nom_final]);
-
-            // تحريك التصويرة لـ public/uploads/designs
-            $file->move(public_path('uploads/designs'), $nom_final);
-
-            // تسجيل ف جدول design وربطو مع المستعمل
-            Design::create([
-                'id_image' => $img->id_image,
-                'id_utilisateur' => Auth::id() 
+            // 1. الخطأ الأول: $fileName ما كنتيش معرفها
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            // 2. الخطأ الثاني: استعملت $path فالتخزين ولكن ما استعملتيهاش فالداتابيز
+            $path = $file->storeAs('logos', $fileName, 'public');
+            
+            // 3. الخطأ الثالث: الـ ID فالداتابيز عندك سميتو id_design ماشي id
+            $design = Design::create([
+                'nom_design'     => $fileName, // دابا مريغلة
+                'date_upload'    => now(), 
+                'id_utilisateur' => $request->id_utilisateur,
             ]);
 
             return response()->json([
                 'status' => 'success',
-                'design_url' => asset('uploads/designs/' . $nom_final),
-                'id_image' => $img->id_image,
-                'categorie' => $request->categorie
+                'id_design' =>$design->id, 
+                'nom_design' => $design->nom_design,// استعمل السمية اللي فالداتابيز
+                'logo_url' => asset('storage/logos/' . $fileName)
             ]);
         }
-
-        return response()->json(['error' => 'No image'], 400);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+public function showDesign($id)
+{
+    $design = Design::find($id);
+    if($design) {
+        return response()->json($design);
+    }
+    return response()->json(['message' => 'Not found'], 404);
+}
 }
