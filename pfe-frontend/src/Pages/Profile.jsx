@@ -15,30 +15,6 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
-      {/* Header dyal l-page (NavBar) */}
-      <header style={{ backgroundColor: '#301d85' }}>
-        <a href="/" className="logo">
-          <img src="/imgs/print.png" style={{ width: '200px' }} alt="Logo" />
-        </a>
-        <ul id="navbar">
-          <li><a href="/">Accueil</a></li>
-          <li><a href="/produits">Produits</a></li>
-          <li><a href="/propos">A propos</a></li>
-          <li><a className="active" href="/upload">UP Design</a></li>
-          <li>
-            <a href="/panier">
-              <i className="fa-solid fa-basket-shopping" style={{ color: '#e4b946' }}></i>
-            </a>
-          </li>
-          {/* Hna l-logic dyal Login/Logout f React kiy-kon 3la 7ssab l-Auth dyalk */}
-          <li><a href="/logout">Logout</a></li>
-          <a href="/utilisateur">
-            <img src="/login.png" style={{ width: '30px' }} alt="User" />
-          </a>
-        </ul>
-      </header>
-
-      {/* Main Profile Info (l-blassa dyal l-image w l-username) */}
       <div className="main" style={{ display: 'flex', paddingLeft: '10%', paddingTop: '10%' }}>
         <div className="profile-image" id="data">
           <img src="/login.png" style={{ width: '130px' }} alt="Avatar" />

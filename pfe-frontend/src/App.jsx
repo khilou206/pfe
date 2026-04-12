@@ -17,8 +17,6 @@ function App() {
     <AuthProvider>
     <BrowserRouter>
       <Routes>
-
-        {/* Pages li fihom layout */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetails />} />
@@ -31,7 +29,6 @@ function App() {
           <Route path="/upload" element={<Upload />} />
         </Route>
 
-        {/* login بلا layout */}
         <Route path="/login" element={<Auth />} />
 
       </Routes>

@@ -1,10 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/api', // العنوان ديال Laravel ديالك
+    baseURL: 'http://localhost:8000/api', 
 });
 
-// هاد الكود كيزيد الـ Token لـ أي طلب خارج من React
 api.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
     if (token) {
