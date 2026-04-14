@@ -3,84 +3,133 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produit;
-use Illuminate\Http\Request;
 use App\Models\Image;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function saveDesign(Request $request) {
+    // 1. كيحفظ التصويرة (للعرض فقط في السلة)
+    $imageData = $request->final_mockup;
+    $name = time().'_mockup.png';
+    \Storage::disk('public')->put('mockups/'.$name, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData)));
 
-public function saveFullDesign(Request $request)
+    // 2. كيكريي المنتج وكيسجل فيه سمية تصويرة الموكاب
+    $produit = Produit::create([
+        'nom_produit' => $request->title,
+        'final_mockup' => $name, // هادي اللي غتبان في السلة
+        // ...
+    ]);
+
+    // 3. كيسجل الإحداثيات في جدول Images (باش الـ Admin يقدر يعدل)
+    Image::create([
+        'id_product' => $produit->id,
+        'id_design' => $request->id_design,
+        'x' => $request->x,
+        'y' => $request->y,
+        'width' => $request->width,
+        'height' => $request->height,
+        'nom_image' => $designName // السمية الأصلية ديال اللوغو
+    ]);
+}
+    public function saveFullDesign(Request $request)
 {
     try {
-        // 1. تسجيل المنتج فجدول produits
-        $produit = \App\Models\Produit::create([
-            'nom_produit'         => $request->title,
+        // 1. التأكد من وجود الديزاين
+        $design = \App\Models\Design::find($request->id_design);
+        if (!$design) return response()->json(['error' => 'Design non trouvé'], 404);
+
+        $mockupName = null;
+        if ($request->has('final_mockup') && !empty($request->final_mockup)) {
+            $imageData = $request->final_mockup;
+            
+            // طريقة احترافية وسهلة باش تحيد الـ Header ديال Base64 كيفما كان نوعه (png أو jpeg)
+            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
+                $imageData = substr($imageData, strpos($imageData, ',') + 1);
+                $extension = strtolower($type[1]); // png, jpg, etc.
+                $imageData = base64_decode($imageData);
+                
+                $mockupName = 'mockup_' . time() . '.' . $extension;
+                \Storage::disk('public')->put('mockups/' . $mockupName, $imageData);
+            }
+        }
+
+        // 2. تسجيل المنتج
+        $produit = Produit::create([
+            'nom_produit'         => $request->title ?? 'Produit Personnalisé',
             'categorie_produit'   => $request->category,
             'description_produit' => $request->description,
-            'prix'                => $request->price,
-            'id_utilisateur'      => auth()->id() ?? $request->id_utilisateur, 
+            'prix'                => $request->price, 
+            'id_utilisateur'      => $request->id_utilisateur, 
+            'is_public'           => $request->is_public ?? 0,
+            'color'               => $request->color,
+            'final_mockup'        => $mockupName, 
         ]);
 
-        // 2. تسجيل البيانات فجدول images
-        // هنا كنجمعو اللوغو (id_design) مع الموكاب (id_mockup)
-        $image = \App\Models\Image::create([
-            'nom_image'  => 'final_' . $request->category . '_' . time(),
+        // 3. تسجيل إحداثيات الصورة
+        Image::create([
+            'nom_image'  => $design->nom_design, 
             'id_design'  => $request->id_design,
-            'id_mockup'  => $request->id_mockup,
-            'id_product' => $produit->id // ربط مباشر فجدول images
+            'id_product' => $produit->id,
+            'x'          => (int)$request->x,     
+            'y'          => (int)$request->y,      
+            'width'      => (int)$request->width,  
+            'height'     => (int)$request->height  
         ]);
 
-        // 3. الربط فجدول Poster (حسب الـ MCD ديالك هادا هو جدول الربط الأساسي)
-        // كنستعملو attach باش نزيدو سطر فجدول poster فيه id_product و id_image
-        $produit->images()->attach($image->id);
-
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Produit et Design sauvegardés avec succès',
-            'data'    => [
-                'produit' => $produit,
-                'image'   => $image
-            ]
-        ], 201);
-
+        return response()->json(['status' => 'success', 'message' => 'Produit enregistré !'], 201);
+        
     } catch (\Exception $e) {
+        // هادي غاتوريك الخطأ الحقيقي في الـ Console ديال React
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
+    public function getUserCart(Request $request) {
+        // تأكد أن المستعمل داخل (authenticated)
+        $products = Produit::with('images')
+                    ->where('id_utilisateur', $request->user()->id)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+
+        return response()->json($products);
+    }
+
+    public function getByCategory(Request $request, $category)
+    {
+        try {
+            $limit = $request->query('limit', 4);
+            $products = Produit::with('images')
+                ->where('categorie_produit', $category)
+                ->orderBy('id', 'DESC')
+                ->limit($limit)
+                ->get();
+
+            return response()->json($products);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function index(Request $request)
     {
-        $query = Produit::query();
+        $query = Produit::with('images'); // زدنا with باش يجيو الصور
 
         if ($request->has('categorie')) {
             $query->where('categorie_produit', $request->categorie);
         }
+
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('nom', 'LIKE', "%{$search}%")
-                ->orWhere('description', 'LIKE', "%{$search}%")
-                ->orWhere('categorie_produit', 'LIKE', "%{$search}%");
+                // تصحيح سميات الحقول لتطابق الـ Migration
+                $q->where('nom_produit', 'LIKE', "%{$search}%")
+                  ->orWhere('description_produit', 'LIKE', "%{$search}%");
             });
         }
         return response()->json($query->orderBy('id', 'desc')->get());
     }
-//====================================================================================================================
-    public function getByCategory(Request $request, $category)
-{
-    try {
-        $limit = $request->query('limit', 4);
-        $products = Produit::with('images')
-            ->where('categorie_produit', $category)
-            ->orderBy('id', 'DESC') // بدل id_product بـ id
-            ->limit($limit)
-            ->get();
 
-        return response()->json($products);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }
-}
-//====================================================================================================================
     public function show($id)
     {
         $produit = Produit::with('images')->find($id);
@@ -88,23 +137,5 @@ public function saveFullDesign(Request $request)
             return response()->json(['message' => 'Not Found'], 404);
         }
         return response()->json($produit);
-    }
-//====================================================================================================================
-    public function getByUser($id)
-    {
-        return Produit::with('images')
-                    ->where('id_utilisateur', $id)
-                    ->orderBy('id_product', 'DESC')
-                    ->get();
-    }
-//====================================================================================================================
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-        $produits = Produit::where('nom', 'LIKE', "%{$query}%")
-            ->orWhere('description', 'LIKE', "%{$query}%")
-            ->get();
-
-        return response()->json($produits);
     }
 }

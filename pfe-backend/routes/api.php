@@ -58,4 +58,5 @@ Route::post('/upload-design', [UploadController::class, 'uploadDesign']);
     Route::get('/fetch-mockup-products/{cat}', [UploadController::class, 'getProductsByCat']);
 
   Route::get('/designs/{id}', [UploadController::class, 'showDesign']);
+  Route::middleware('auth:sanctum')->get('/my-cart', [ProductController::class, 'getUserCart']);
 });

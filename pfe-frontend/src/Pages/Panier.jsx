@@ -1,40 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 import '../styles/panier.css';
 
 const Panier = () => {
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
+    const { token, user } = useContext(AuthContext);
     const navigate = useNavigate();
+    const getProductBaseImage = (category, color) => {
+        const mapping = {
+            'T-shirt': 'th1',
+            'sweatshirt': 'hd1',
+            'chaier': 'bk1',
+            'horloge': 'rg1',
+            'tapis souris': 'tp1',
+            'pochette': 'ph1'
+        };
 
+        const baseName = mapping[category] || 'th1';
+        
+        
+        const colorSuffix = (color && color !== 'white') ? `_${color}` : '_black';
+        
+        
+       const extension = '.jpg';
+
+      return `/img/${baseName}${colorSuffix}${extension}`;
+    };
+
+    
     useEffect(() => {
-        const savedCart = JSON.parse(localStorage.getItem('panier')) || [];
-        setCart(savedCart);
-        calculateTotal(savedCart);
-    }, []);
+        const fetchCart = async () => {
+            if (token) {
+                try {
+                    const res = await axios.get('http://127.0.0.1:8000/api/my-cart', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    // إضافة كمية افتراضية (1) لكل منتج
+                    const dataWithQty = res.data.map(item => ({ ...item, qte: 1 }));
+                    setCart(dataWithQty);
+                    updateTotal(dataWithQty);
+                } catch (err) {
+                    console.error("Erreur lors du chargement du panier", err);
+                }
+            }
+        };
+        fetchCart();
+    }, [token]);
 
-    const calculateTotal = (items) => {
-        let t = items.reduce((acc, item) => acc + (Number(item.prix) * Number(item.qte)), 0);
+    const updateTotal = (items) => {
+        const t = items.reduce((acc, item) => acc + (Number(item.prix) * item.qte), 0);
         setTotal(t);
     };
 
-    const removeItem = (index) => {
+    const updateQty = (index, val) => {
+        const newQty = Math.max(1, parseInt(val) || 1);
         const newCart = [...cart];
-        newCart.splice(index, 1);
+        newCart[index].qte = newQty;
         setCart(newCart);
-        localStorage.setItem('panier', JSON.stringify(newCart));
-        calculateTotal(newCart);
+        updateTotal(newCart);
     };
 
-    const updateQty = (index, val) => {
-        const newQty = parseInt(val);
-        if (newQty > 0) {
-            const newCart = [...cart];
-            newCart[index].qte = newQty;
-            setCart(newCart);
-            localStorage.setItem('panier', JSON.stringify(newCart));
-            calculateTotal(newCart);
-        }
+    const removeItem = (index) => {
+        const newCart = cart.filter((_, i) => i !== index);
+        setCart(newCart);
+        updateTotal(newCart);
+        // ملاحظة: هنا يفضل مستقبلاً تصيفط Delete request لـ Laravel باش تمسح حتى من الداتابيز
     };
 
     return (
@@ -42,6 +75,7 @@ const Panier = () => {
             <div className="pmn-cart-section-container">
                 <div className="pmn-cart-header-title">
                     <h2>Mon Panier</h2>
+                    <p>Bienvenue, {user?.nom || 'Client'}</p>
                     <hr />
                 </div>
 
@@ -52,39 +86,63 @@ const Panier = () => {
                                 <thead>
                                     <tr>
                                         <th>Supprimer</th>
-                                        <th>Image</th>
+                                        <th>Aperçu</th>
                                         <th>Produit</th>
-                                        <th>Prix</th>
+                                        <th>Prix Unit.</th>
                                         <th>Quantité</th>
                                         <th>Sous-total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {cart.map((item, index) => (
-                                        <tr key={index}>
+                                        <tr key={item.id}>
                                             <td>
-                                                <button onClick={() => removeItem(index)} style={{ color: '#ff4d4d', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                                <button onClick={() => removeItem(index)} className="btn-delete">
                                                     <i className="fa-solid fa-trash-can"></i>
                                                 </button>
                                             </td>
-                                            <td>
-                                                <img 
-                                                    className="pmn-cart-item-img" 
-                                                    src={item.image.startsWith('http') ? item.image : `http://127.0.0.1:8000/storage/${item.image}`} 
-                                                    alt={item.produit} 
-                                                />
+                                         <td>
+    {item.final_mockup ? (
+        <div className="pmn-cart-preview-box">
+            <img 
+                src={`http://127.0.0.1:8000/storage/mockups/${item.final_mockup}`} 
+                alt="Product Preview" 
+                style={{ width: '100px', height: '100px', objectFit: 'contain' }} 
+            />
+        </div>
+    ) : (
+        /* Fallback: إلا مكانتش التصويرة الواجدة، نخدمو بالطريقة القديمة */
+        <div className="pmn-cart-preview-box" style={{ position: 'relative', width: '100px', height: '100px' }}>
+             <img src={getProductBaseImage(item.categorie_produit, item.color)} style={{ width: '100%', position: 'absolute' }} />
+             {item.images?.[0] && (
+                 <img 
+                    src={`http://127.0.0.1:8000/storage/logos/${item.images[0].nom_image}`} 
+                    style={{
+                        position: 'absolute',
+                        left: `${(item.images[0].x / 440) * 100}%`,
+                        top: `${(item.images[0].y / 490) * 100}%`,
+                        width: `${(item.images[0].width / 500) * 100}%`,
+                    }}
+                 />
+             )}
+        </div>
+    )}
+</td>                            <td>
+                                                <div className="product-info">
+                                                    <span className="product-name">{item.nom_produit}</span>
+                                                    <span className="product-cat">{item.categorie_produit}</span>
+                                                </div>
                                             </td>
-                                            <td style={{ fontWeight: '600' }}>{item.produit}</td>
                                             <td>{item.prix} DH</td>
                                             <td>
                                                 <input 
-                                                    className="pmn-cart-qty-input" 
                                                     type="number" 
                                                     value={item.qte} 
                                                     onChange={(e) => updateQty(index, e.target.value)}
+                                                    className="pmn-cart-qty-input"
                                                 />
                                             </td>
-                                            <td style={{ fontWeight: 'bold', color: '#4d3087' }}>{(item.prix * item.qte).toFixed(2)} DH</td>
+                                            <td className="subtotal-cell">{(item.prix * item.qte).toFixed(2)} DH</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -92,25 +150,25 @@ const Panier = () => {
                         </div>
 
                         <div className="pmn-cart-bottom-grid">
-                            <div className="pmn-cart-coupon-card" style={{ padding: '20px', border: '1px solid #eee', borderRadius: '12px' }}>
-                                <h5 style={{ color: '#1a1a2e', marginBottom: '15px' }}>Code Promo</h5>
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <input type="text" placeholder="Entrez le code" style={{ flex: 1, padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }} />
-                                    <button style={{ padding: '10px 20px', background: '#1a1a2e', color: '#fff', border: 'none', borderRadius: '5px' }}>Appliquer</button>
+                            <div className="pmn-cart-coupon-card">
+                                <h5>Code Promo</h5>
+                                <div className="coupon-input-group">
+                                    <input type="text" placeholder="Entrez le code" />
+                                    <button>Appliquer</button>
                                 </div>
                             </div>
 
                             <div className="pmn-cart-summary-card">
                                 <h5>Récapitulatif</h5>
-                                <div className="pmn-cart-summary-row">
+                                <div className="summary-row">
                                     <span>Sous-total</span>
                                     <span>{total.toFixed(2)} DH</span>
                                 </div>
-                                <div className="pmn-cart-summary-row">
+                                <div className="summary-row">
                                     <span>Livraison</span>
-                                    <span>Gratuite</span>
+                                    <span className="free-shipping">Gratuite</span>
                                 </div>
-                                <div className="pmn-cart-summary-row" style={{ marginTop: '15px', fontSize: '1.4rem', fontWeight: 'bold', borderTop: '1px solid rgba(255,255,255,0.3)', paddingTop: '15px' }}>
+                                <div className="summary-total">
                                     <span>Total</span>
                                     <span>{total.toFixed(2)} DH</span>
                                 </div>
@@ -121,12 +179,10 @@ const Panier = () => {
                         </div>
                     </div>
                 ) : (
-                    <div style={{ textAlign: 'center', padding: '100px 0' }}>
-                        <i className="fa-solid fa-cart-arrow-down" style={{ fontSize: '4rem', color: '#ccc' }}></i>
-                        <h3 style={{ marginTop: '20px', color: '#666' }}>Votre panier est actuellement vide.</h3>
-                        <Link to="/produits" className="pmn-cart-btn-checkout" style={{ display: 'inline-block', width: 'auto', marginTop: '20px', textDecoration: 'none' }}>
-                            Retour à la boutique
-                        </Link>
+                    <div className="empty-cart">
+                        <i className="fa-solid fa-cart-shopping"></i>
+                        <h3>Votre panier est vide</h3>
+                        <Link to="/produits" className="btn-back">Continuer mes achats</Link>
                     </div>
                 )}
             </div>

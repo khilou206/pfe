@@ -12,7 +12,7 @@ class Design extends Model
     
  protected $fillable = [
     'nom_design',
-    'date_upload', // تأكد بلي كاينين هاد الأقواس ''
+    'date_upload',
     'id_utilisateur'
 ];
 

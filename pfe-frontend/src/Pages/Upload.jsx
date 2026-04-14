@@ -36,7 +36,9 @@ const Upload = () => {
         },
       });
       if (res.data.id_design) {
-        navigate(`/product-design?id=${res.data.id_design}&cat=${category}`);
+       navigate(`/product-design?id=${res.data.id_design}&cat=${category}`, {
+    state: { localImage: preview } // كنزيدو هاد السطر باش نصيفطو التصويرة اللي ديجا عندنا
+  });
       }
     } catch (err) {
       console.error('Upload Error', err.response?.data);
