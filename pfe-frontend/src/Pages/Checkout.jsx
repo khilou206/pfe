@@ -1,89 +1,140 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import '../styles/product.css';
+import { useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import '../styles/Checkout.css';
 
 const Checkout = () => {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const sessionId = searchParams.get('session_id'); // Kiy-jibo mn l-URL: ?session_id=...
-
+    const location = useLocation();
+    const { token } = useContext(AuthContext);
     const [formData, setFormData] = useState({ city: '', zipcode: '', address: '' });
-    const [panier, setPanier] = useState([]);
-    const [isPaid, setIsPaid] = useState(false); // Bach n-7miw l-page
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        // 1. Check wach kayn session_id (Ya3ni ja mn Stripe)
-        if (!sessionId) {
-            alert("Accès refusé. Veuillez passer par le panier.");
-            navigate('/cart');
-            return;
-        }
+    // التأكد من أن الـ items موجودة
+    const items = location.state?.items || [];
 
-        // 2. Verifier m3a Laravel wach had l-session khalsa b-sa7
-        const verifyPayment = async () => {
-            try {
-                const res = await axios.get(`http://127.0.0.1:8000/api/verify-payment/${sessionId}`);
-                if (res.data.status === 'paid') {
-                    setIsPaid(true);
-                    setPanier(JSON.parse(localStorage.getItem('panier')) || []);
-                } else {
-                    navigate('/cart');
-                }
-            } catch (err) {
-                console.error("Erreur verification", err);
-                navigate('/cart');
-            }
-            setLoading(false);
-        };
-
-        verifyPayment();
-    }, [sessionId, navigate]);
+    // حساب المجموع بطريقة آمنة
+    const totalPrice = items.reduce((sum, item) => {
+        const price = parseFloat(item.price) || 0;
+        return sum + price;
+    }, 0);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const orderPayload = {
-                ...formData,
-                produits: panier.map(item => ({
-                    id: item.id_produit,
-                    qte: item.qte,
-                    color: item.color || 'Standard'
-                })),
-                stripe_session_id: sessionId // Zidha bach t-khzenha f DB ila bghiti
-            };
 
-            const response = await axios.post('http://127.0.0.1:8000/api/create-commande', orderPayload);
-            if (response.data.status === 'success') {
-                localStorage.removeItem('panier');
-                alert("Commande validée !");
-                navigate('/success');
+        if (items.length === 0) {
+            alert("السلة فارغة. يرجى إضافة منتجات أولاً.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/payment', {
+                city: formData.city,
+                zipcode: formData.zipcode,
+                address: formData.address,
+                items: items
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.data.url) {
+                window.location.href = response.data.url;
             }
-        } catch (error) {
-            alert("Erreur lors de l'enregistrement de la commande.");
+        } catch (err) {
+            console.error("Erreur Backend:", err.response?.data);
+            alert(err.response?.data?.message || "وقع مشكل أثناء معالجة الدفع");
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading) return <div className="produitC">Vérification du paiement...</div>;
-    if (!isPaid) return null;
-
     return (
-        <main className="produitC">
-            <h2 className="tag">Détails de Livraison</h2>
-            <div className="container-Product" style={{ padding: '40px' }}>
-                <form onSubmit={handleSubmit} className="product">
-                    {/* Les inputs (City, Zip, Address) - Nfs l-code li qbel */}
-                    <input name="city" placeholder="Ville" onChange={(e) => setFormData({...formData, city: e.target.value})} required className="input-style" />
-                    <input name="zipcode" placeholder="Code Postal" onChange={(e) => setFormData({...formData, zipcode: e.target.value})} required className="input-style" />
-                    <textarea name="address" placeholder="Adresse" onChange={(e) => setFormData({...formData, address: e.target.value})} required className="input-style" />
-                    
-                    <button type="submit" className="buy-now" style={{marginTop: '20px'}}>
-                        Confirmer la commande
+        <div className="cx">
+            <div className="cx-inner">
+                <div className="cx-header">
+                    <div className="cx-ornament">
+                        <div className="cx-line"></div>
+                        <div className="cx-hex"></div>
+                        <div className="cx-line r"></div>
+                    </div>
+                    <h1 className="cx-title">Livraison</h1>
+                    <p className="cx-sub">Finalisez votre commande</p>
+                </div>
+
+                <div className="cx-steps">
+                    <div className="cx-step done"></div>
+                    <div className="cx-step done"></div>
+                    <div className="cx-step active"></div>
+                    <div className="cx-step"></div>
+                </div>
+
+                <div className="cx-order">
+                    <div>
+                        <p className="cx-ol">Commande</p>
+                        <p className="cx-ov">{items.length} produit{items.length > 1 ? 's' : ''}</p>
+                    </div>
+                    <div className="cx-secure-tag">Stripe ✦</div>
+                </div>
+
+                <form onSubmit={handleSubmit}>
+                    <p className="cx-lbl">Adresse de livraison</p>
+
+                    <div className="cx-row">
+                        <div className="cx-field">
+                            <label>Ville</label>
+                            <input
+                                type="text"
+                                placeholder="Ex: Casablanca"
+                                value={formData.city}
+                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div className="cx-field">
+                            <label>Code Postal</label>
+                            <input
+                                type="text"
+                                placeholder="Ex: 20000"
+                                value={formData.zipcode}
+                                onChange={(e) => setFormData({ ...formData, zipcode: e.target.value })}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="cx-field full-width">
+                        <label>Adresse complète</label>
+                        <textarea
+                            placeholder="Rue, quartier, numéro..."
+                            value={formData.address}
+                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div className="cx-div"></div>
+
+                    <div className="cx-total">
+                        <span className="cx-total-lbl">Total à payer</span>
+                        <span className="cx-total-amt">{totalPrice} DH</span>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="cx-btn"
+                        disabled={loading}
+                    >
+                        <span>{loading ? "Traitement..." : "Confirmer & Payer →"}</span>
                     </button>
                 </form>
+
+                
             </div>
-        </main>
+        </div>
     );
 };
 

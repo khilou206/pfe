@@ -1,0 +1,122 @@
+.cx {
+    background: #f7f7f7;
+    min-height: 100vh;
+    padding: 60px 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.cx-inner {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* --- Header --- */
+.cx-header { text-align: center; margin-bottom: 40px; }
+.cx-ornament { display: flex; align-items: center; gap: 15px; }
+.cx-line { flex: 1; height: 1px; background: #ddd; }
+.cx-hex { width: 8px; height: 8px; background: #FFD600; transform: rotate(45deg); }
+.cx-title { font-size: 32px; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 5px; }
+.cx-sub { font-size: 10px; letter-spacing: 3px; color: #888; text-transform: uppercase; }
+
+/* --- Steps --- */
+.cx-steps { display: flex; gap: 8px; margin-bottom: 30px; }
+.cx-step { flex: 1; height: 4px; background: #e0e0e0; border-radius: 2px; }
+.cx-step.done { background: #FFD600; }
+.cx-step.active { background: #111; }
+
+/* --- Summary Card --- */
+.cx-order {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.cx-secure-tag {
+    font-size: 10px;
+    font-weight: bold;
+    color: #27ae60;
+    border: 1px solid #27ae60;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* --- Form Styles --- */
+.cx-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* حيدنا الـ 400px هنا باش يولي التجاوب تلقائي */
+.cx-field {
+    margin-bottom: 20px;
+    width: 100%; 
+}
+
+.cx-field.full-width {
+    grid-column: span 2;
+}
+
+.cx-field label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.cx-field input, .cx-field textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.cx-field input:focus, .cx-field textarea:focus {
+    border-color: #FFD600;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.1);
+}
+
+/* --- Total & Button --- */
+.cx-total {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.cx-total-amt { font-size: 24px; font-weight: bold; color: #111; }
+
+.cx-btn {
+    width: 100%;
+    padding: 20px;
+    background: #111;
+    color: #FFD600;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.cx-btn:hover { background: #333; transform: translateY(-2px); }
+.cx-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 600px) {
+    .cx-row { grid-template-columns: 1fr; }
+    .cx-field.full-width { grid-column: span 1; }
+}

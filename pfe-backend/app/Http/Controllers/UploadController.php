@@ -26,15 +26,15 @@ class UploadController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             
-            // 1. الخطأ الأول: $fileName ما كنتيش معرفها
+            
             $fileName = time() . '_' . $file->getClientOriginalName();
             
-            // 2. الخطأ الثاني: استعملت $path فالتخزين ولكن ما استعملتيهاش فالداتابيز
+        
             $path = $file->storeAs('logos', $fileName, 'public');
             
-            // 3. الخطأ الثالث: الـ ID فالداتابيز عندك سميتو id_design ماشي id
+            
             $design = Design::create([
-                'nom_design'     => $fileName, // دابا مريغلة
+                'nom_design'     => $fileName, 
                 'date_upload'    => now(), 
                 'id_utilisateur' => $request->id_utilisateur,
             ]);
@@ -42,7 +42,7 @@ class UploadController extends Controller
             return response()->json([
                 'status' => 'success',
                 'id_design' =>$design->id, 
-                'nom_design' => $design->nom_design,// استعمل السمية اللي فالداتابيز
+                'nom_design' => $design->nom_design,
                 'logo_url' => asset('storage/logos/' . $fileName)
             ]);
         }

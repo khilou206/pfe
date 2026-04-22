@@ -1,29 +1,32 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Rnd } from 'react-rnd';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Design.css';
 
-const Design = () => {
-    const { user, token } = useContext(AuthContext);
-    const navigate = useNavigate();
-    const location = useLocation();
-    
-    // جلب البيانات من URL ومن الـ State المحلي للهرب من CORS
-    const queryParams = new URLSearchParams(location.search);
-    const idDesign = queryParams.get('id');
-    const category = queryParams.get('cat') || 'T-shirt';
-    const localImage = location.state?.localImage; 
 
+
+
+const Design = () => {
+   
+    const navigate = useNavigate();
+    
+   const { user, token, designData } = useContext(AuthContext);
+ const savedData = JSON.parse(localStorage.getItem('designData') || 'null');
+
+const idDesign = designData?.idDesign || savedData?.idDesign;
+const category = designData?.category || savedData?.category || 'T-shirt';
+const localImage = designData?.localImage || savedData?.localImage;
+    const [isPublic, setIsPublic] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [selectedColor, setSelectedColor] = useState('white');
     const [logoUrl, setLogoUrl] = useState(localImage || '');
     const [designState, setDesignState] = useState({ width: 120, height: 120, x: 140, y: 150 });
 
-    // تحديد مسار صورة المنتج الأساسية
+    
     const getProductImage = () => {
         const mapping = { 'T-shirt': 'th1', 'sweatshirt': 'hd1', 'chaier': 'bk1', 'horloge': 'rg1', 'tapis souris': 'tp1', 'pochette': 'ph1' };
         const baseName = mapping[category] || 'th1';
@@ -31,8 +34,12 @@ const Design = () => {
         const extension = (category === 'horloge' || category === 'tapis souris') ? '.png' : '.jpg';
         return `/img/${baseName}${colorSuffix}${extension}`;
     };
-
-    // تحميل اللوغو فقط إذا لم يكن موجوداً محلياً
+useEffect(() => {
+  if (!idDesign) {
+    navigate('/upload'); 
+  }
+}, [idDesign]);
+    
     useEffect(() => {
         if (!logoUrl && idDesign && token) {
             axios.get(`http://127.0.0.1:8000/api/designs/${idDesign}`, {
@@ -48,10 +55,10 @@ const Design = () => {
     if (!element) return;
 
     try {
-        // 1. أول حاجة نصاوبو الـ Canvas بإعدادات نقية
+        
         const canvas = await html2canvas(element, { 
             useCORS: true,
-            scale: 2,           // جودة عالية باش ما يتشوهش اللوغو
+            scale: 2,           
             backgroundColor: null,
             logging: false,
             width: element.offsetWidth,
@@ -62,10 +69,10 @@ const Design = () => {
             }
         });
 
-        // 2. عاد نخرجوا الـ Screenshot
+    
         const screenshot = canvas.toDataURL('image/jpeg', 0.8);
 
-        // 3. نصيفطو البيانات لـ Laravel
+        
         const response = await axios.post('http://127.0.0.1:8000/api/save-design', {
             id_design: idDesign,
             title: title || 'Produit sans titre',
@@ -75,6 +82,7 @@ const Design = () => {
             color: selectedColor,
             id_utilisateur: user?.id || user?.id_utilisateur,
             final_mockup: screenshot,
+            is_public: isPublic ? 1 : 0,
             x: Math.round(designState.x),
             y: Math.round(designState.y),
             width: Math.round(designState.width),
@@ -86,7 +94,7 @@ const Design = () => {
         
         navigate('/panier');
     } catch (err) {
-        // تصحيح عرض الخطأ باش ما يبقاش يعطيك undefined
+    
         console.error("Save error details:", err.response?.data || err.message);
         alert("Erreur: " + (err.response?.data?.message || "Vérifiez les champs ou la base de données"));
     }
@@ -130,18 +138,8 @@ const Design = () => {
                 <h3>● Paramètres</h3>
                 <div className="input-group">
                     <label>Taille du Logo: {designState.width}px</label>
-                    <input 
-    type="range" 
-    min="50" 
-    max="300" 
-    value={designState.width} 
-    onChange={(e) => {
-        const newSize = parseInt(e.target.value);
-        setDesignState({
-            ...designState, 
-            width: newSize, 
-            height: newSize // Hna fin kishwat ila kanti baghih dima square
-        });
+                    <input type="range" min="50" max="300"  value={designState.width}  onChange={(e) => {const newSize = parseInt(e.target.value);setDesignState({ ...designState, width: newSize, height: newSize // Hna fin kishwat ila kanti baghih dima square
+});
     }} 
 />
                 </div>
@@ -165,6 +163,18 @@ const Design = () => {
                     <label>Description :</label>
                     <textarea value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
                 </div>
+                <div className="input-group checkbox-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '15px 0' }}>
+    <input 
+        type="checkbox" 
+        id="is_public" 
+        checked={isPublic} 
+        onChange={(e) => setIsPublic(e.target.checked)} 
+        style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+    />
+    <label htmlFor="is_public" style={{ cursor: 'pointer', fontWeight: 'bold' }}>
+        Rendre ce produit public (Visible par tous)
+    </label>
+</div>
                 <button className="btn-send" onClick={handleSave}>Envoyer</button>
             </div>
         </div>
