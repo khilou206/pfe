@@ -38,7 +38,6 @@ const Panier = () => {
                     const res = await axios.get('http://127.0.0.1:8000/api/my-cart', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
-                    // إضافة كمية افتراضية (1) لكل منتج
                     const dataWithQty = res.data.map(item => ({ ...item, qte: 1 }));
                     setCart(dataWithQty);
                     updateTotal(dataWithQty);
@@ -67,7 +66,6 @@ const Panier = () => {
         const newCart = cart.filter((_, i) => i !== index);
         setCart(newCart);
         updateTotal(newCart);
-        // ملاحظة: هنا يفضل مستقبلاً تصيفط Delete request لـ Laravel باش تمسح حتى من الداتابيز
     };
 
     return (
@@ -111,7 +109,6 @@ const Panier = () => {
             />
         </div>
     ) : (
-        /* Fallback: إلا مكانتش التصويرة الواجدة، نخدمو بالطريقة القديمة */
         <div className="pmn-cart-preview-box" style={{ position: 'relative', width: '100px', height: '100px' }}>
              <img src={getProductBaseImage(item.categorie_produit, item.color)} style={{ width: '100%', position: 'absolute' }} />
              {item.images?.[0] && (
@@ -172,9 +169,9 @@ const Panier = () => {
                                     <span>Total</span>
                                     <span>{total.toFixed(2)} DH</span>
                                 </div>
-                                <button className="pmn-cart-btn-checkout" onClick={() => navigate('/checkout')}>
-                                    Valider la Commande
-                                </button>
+                                <button className="pmn-cart-btn-checkout" onClick={() => navigate('/checkout', { state: { items: cart } })}>
+    Valider la Commande
+</button>
                             </div>
                         </div>
                     </div>

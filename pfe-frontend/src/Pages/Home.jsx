@@ -5,14 +5,14 @@ import './Home.css'
 const Home = () => {
   return (
     <section className="hero-wrapper">
-      {/* Background Glows (Transitions via CSS) */}
+      
       <div className="glow-bg">
         <div className="glow" style={{ width: '40vw', height: '40vw', top: '-10%', right: '-5%', background: '#4ade80' }}></div>
         <div className="glow" style={{ width: '40vw', height: '40vw', bottom: '-10%', left: '-5%', background: '#c084fc' }}></div>
       </div>
 
       <div style={{ zIndex: 2, padding: '0 5%', position: 'relative' }}>
-        {/* Subtle Badge */}
+     
         <div style={{ 
           display: 'inline-block', padding: '6px 16px', borderRadius: '50px', 
           background: 'var(--card-bg)', border: '1px solid var(--border-color)', marginBottom: '2rem' 

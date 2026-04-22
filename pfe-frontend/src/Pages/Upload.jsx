@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Upload.css';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [category, setCategory] = useState('T-shirt');
   const navigate = useNavigate();
+  const { setDesignData } = useContext(AuthContext);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -15,6 +18,7 @@ const Upload = () => {
     setFile(selectedFile);
     setPreview(URL.createObjectURL(selectedFile));
   };
+  
 
   const handleSend = async () => {
     const token = localStorage.getItem('token');
@@ -36,10 +40,17 @@ const Upload = () => {
         },
       });
       if (res.data.id_design) {
-       navigate(`/product-design?id=${res.data.id_design}&cat=${category}`, {
-    state: { localImage: preview } // كنزيدو هاد السطر باش نصيفطو التصويرة اللي ديجا عندنا
-  });
-      }
+ const data = {
+  idDesign: res.data.id_design,
+  category: category,
+  localImage: preview
+};
+
+setDesignData(data);
+localStorage.setItem('designData', JSON.stringify(data));
+
+navigate('/product-design');
+}
     } catch (err) {
       console.error('Upload Error', err.response?.data);
     }

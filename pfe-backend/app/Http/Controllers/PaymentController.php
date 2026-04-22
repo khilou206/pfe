@@ -1,63 +1,100 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use App\Models\Commande; 
+use App\Models\Adresse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
-class PaymentController extends Controller
-{
-    public function checkout(Request $request)
-    {
-        // 1. Set API Key (Dima diha f .env f l-7aqiqa)
-        Stripe::setApiKey("!!!!!!!!!!!! dir hna lcode li sift lik !!!!!!!!");
-        $panier = $request->all(); // L-panier jey mn React
-        $lineItems = [];
-
-        foreach ($panier as $item) {
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'mad',
-                    'product_data' => [
-                        'name' => $item['nom'] . ' (Couleur: ' . ($item['color'] ?? 'Standard') . ')',
-                    ],
-                    'unit_amount' => $item['prix'] * 100, 
-                ],
-                'quantity' => $item['qte'],
-            ];
-        }
+class PaymentController extends Controller {
+    public function checkout(Request $request) {
+        // 1. إعداد Stripe
+        Stripe::setApiKey('sk_test_51TNfPRKG1wlMNonw4Vs0Ws0t7nvmCPuzB6Oc0SVtsQC9ipvvSx27atsOrzIMgke8xvYhHRW8ommvhoyD3KfUui9Q00yQ0tdniE');
+        Stripe::setVerifySslCerts(false); // لتجاوز مشكلة SSL في XAMPP
 
         try {
-            $session = Session::create([
-                'payment_method_types' => ['card'],
-                'line_items'           => $lineItems,
-                'mode'                 => 'payment',
-                'invoice_creation'     => ['enabled' => true],
-                'success_url'          => 'http://localhost:3000/checkout?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url'           => 'http://localhost:3000/cart',
-            ]);
+            return DB::transaction(function () use ($request) {
+                $lineItems = [];
+                $totalPrice = 0;
 
-            return response()->json(['id' => $session->id]);
+                
+                if (!$request->has('items') || empty($request->items)) {
+                    return response()->json(['message' => 'السلة فارغة'], 400);
+                }
+
+                foreach ($request->items as $item) {
+                    $prix = $item['prix'];
+                    $quantite = $item['qte'] ?? 1;
+                    $totalPrice += ($prix * $quantite);
+
+                    $lineItems[] = [
+                        'price_data' => [
+                            'currency' => 'mad',
+                            'unit_amount' => $prix * 100, 
+                            'product_data' => [
+                                'name' => (string) ($item['nom_produit'] ?? 'Produit Halla'), 
+                            ],
+                        ],
+                        'quantity' => $quantite,
+                    ];
+                }
+
+
+                $adresse = Adresse::create([
+                    'ville'          => $request->city,
+                    'code_postale'   => $request->zipcode,
+                    'adresse'        => $request->address,
+                    'id_utilisateur' => auth()->id() ?? 1,
+                ]);
+
+                
+                $commande = Commande::create([
+                    'id_utilisateur' => auth()->id() ?? 1,
+                    'id_adresse'     => $adresse->id, 
+                    'total_price'    => $totalPrice,
+                    'status'         => 'pending', 
+                ]);
+
+        
+                $session = Session::create([
+                    'payment_method_types' => ['card'],
+                    'line_items' => $lineItems,
+                    'mode' => 'payment',
+                    'success_url' => 'http://localhost:5173/payment/success?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url'  => 'http://localhost:5173/cart',
+                    'metadata' => [
+                        'commande_id' => $commande->id
+                    ]
+                ]);
+
+                $commande->update(['stripe_id' => $session->id]);
+
+                return response()->json(['url' => $session->url]);
+            });
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Stripe Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Erreur: ' . $e->getMessage()], 500);
         }
     }
-//==========================================================================================================
 
-    public function verify(Request $request, $sessionId)
-    {
-        $stripeSecret = config('services.stripe.secret'); // أو استخدم env('STRIPE_SECRET')
+    public function verify($sessionId) {
+        Stripe::setApiKey('sk_test_51TNfPRKG1wlMNonw4Vs0Ws0t7nvmCPuzB6Oc0SVtsQC9ipvvSx27atsOrzIMgke8xvYhHRW8ommvhoyD3KfUui9Q00yQ0tdniE');
+        Stripe::setVerifySslCerts(false);
+        
         try {
-            $session = \Stripe\Checkout\Session::retrieve($sessionId);
-            
+            $session = Session::retrieve($sessionId);
             if ($session->payment_status === 'paid') {
-                return response()->json(['status' => 'paid']);
+                $commande = Commande::where('stripe_id', $sessionId)->first();
+                if ($commande) {
+                    $commande->update(['status' => 'paid']);
+                    return response()->json(['status' => 'success']);
+                }
             }
-            
-            return response()->json(['status' => 'unpaid'], 400);
-
+            return response()->json(['status' => 'failed'], 400);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

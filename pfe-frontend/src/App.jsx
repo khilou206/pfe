@@ -11,6 +11,9 @@ import Checkout from './Pages/Checkout';
 import Profile from './Pages/Profile';
 import Upload from './Pages/Upload';
 import Design from './Pages/Design';
+import SuccessPage from './Pages/SuccessPage';
+import CancelPage from './Pages/CancelPage';
+
 
 function App() {
   return (
@@ -23,12 +26,13 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/produits" element={<Produits />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout" element={<Checkout></Checkout>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/product-design" element={<Design />} />
           <Route path="/upload" element={<Upload />} />
         </Route>
-
+       <Route path="/payment/success" element={<SuccessPage></SuccessPage>} />
+       <Route path="/payment/cancel" element={<CancelPage></CancelPage>} />
         <Route path="/login" element={<Auth />} />
 
       </Routes>

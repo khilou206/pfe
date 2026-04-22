@@ -10,28 +10,24 @@ use Illuminate\Support\Facades\Log;
 
 class CommandeController extends Controller
 {
-    /**
-     * Enregistrer une nouvelle commande (Post mn React)
-     */
+   
     public function store(Request $request)
     {
-        // 1. Validation dyal l-data li jaya mn l-form f React
+      
         $validated = $request->validate([
             'city'    => 'required|string',
             'zipcode' => 'required|string',
             'address' => 'required|string',
-            'produits'=> 'required|array', // Khass y-koun array dyal l-items
+            'produits'=> 'required|array', 
         ]);
 
         try {
-            // Transaction bach ila wqe3 ghalat f ay blassa, may-t-creer walou (Rollback)
+            
             return DB::transaction(function () use ($request) {
                 
-                // 2. Check User (Login) - kima knti dāyer f PHP
-                // auth('sanctum')->id() ila knti khddam b Sanctum, aw auth()->id()
+            
                 $user_id = auth()->id() ?? 'visiteur';
 
-                // 3. Insert Adresse (Kima "INSERT INTO adresses...")
                 $adresse = Adresse::create([
                     'ville'          => $request->city,
                     'code_postale'   => $request->zipcode,
@@ -39,7 +35,7 @@ class CommandeController extends Controller
                     'id_utilisateur' => $user_id
                 ]);
 
-                // 4. Insert Commande (Kima "INSERT INTO commandes...")
+              
                 $commande = Commande::create([
                     'date_commande'   => now(),
                     'statut_commande' => 'en attente',
@@ -47,9 +43,9 @@ class CommandeController extends Controller
                     'id_utilisateur'  => $user_id
                 ]);
 
-                // 5. Insert f table "porter" (Kima l-foreach f PHP dyalk)
+               
                 foreach ($request->produits as $item) {
-                    // $item khass y-koun fih {id, qte, color}
+                   
                     $commande->produits()->attach($item['id'], [
                         'qte'   => $item['qte'],
                         'color' => $item['color'] ?? 'default'

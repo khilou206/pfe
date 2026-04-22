@@ -27,11 +27,14 @@ Route::get('/products/category/{category}', [ProductController::class, 'getByCat
 Route::get('/users/{id}/products', [ProductController::class, 'getByUser']);
 
 // Payment & Verification
+Route::middleware('auth:sanctum')->group(function () {
 Route::post('/payment', [PaymentController::class, 'checkout']);
-Route::get('/verify-payment/{sessionId}', [PaymentController::class, 'verify']);
-
+    Route::get('/verify-payment/{sessionId}', [PaymentController::class, 'verify']);
+    Route::post('/commandes', [CommandeController::class, 'store']); // هادي خليها للاحتياط
+    Route::get('/my-cart', [ProductController::class, 'getUserCart']);
+});
 /*
-|--------------------------------------------------------------------------
+|--------------------------z------------------------------------------------
 | Protected Routes (Token / Sanctum)
 |--------------------------------------------------------------------------
 */

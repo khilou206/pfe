@@ -18,13 +18,13 @@ const ProductDetail = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // 1. Jbed l-produit mn Laravel
+                
                 const res = await axios.get(`http://127.0.0.1:8000/api/produits/${id}`);
                 setProduit(res.data);
 
-                // 2. Jbed Related Products (ghadi i-jbed ga3 l-produits w n-filtrer f React)
+                
                 const resRelated = await axios.get(`http://127.0.0.1:8000/api/produits`);
-                // N-jibo ghir 4 dyal l-produits li machi houma hada
+               
                 const filtered = resRelated.data
                     .filter(p => p.id_produit !== parseInt(id))
                     .slice(0, 4);
@@ -37,7 +37,7 @@ const ProductDetail = () => {
         fetchData();
     }, [id]);
 
-    // Counter Logic
+  
     const increaseCount = () => setCount(prev => prev + 1);
     const decreaseCount = () => setCount(prev => (prev > 1 ? prev - 1 : 1));
 
@@ -55,7 +55,7 @@ const ProductDetail = () => {
         
         let panier = JSON.parse(localStorage.getItem('panier')) || [];
         
-        // Check wach déjà f l-panier (nfs l-id, size, color)
+        
         const existingIndex = panier.findIndex(p => 
             p.id_produit === cartItem.id_produit && 
             p.size === cartItem.size && 

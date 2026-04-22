@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     public function getProfile(Request $request) {
-        $user = $request->user(); // Sanctum kiy-3ref l-user b l-token
+        $user = $request->user(); 
         
         $stats = [
             'nb_produits' => \DB::table('produits')->where('id_utilisateur', $user->id_utilisateur)->count(),

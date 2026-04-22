@@ -38,6 +38,9 @@ return new class extends Migration
         $table->text('description_produit')->nullable();
         $table->decimal('prix', 10, 2)->nullable();
         $table->foreignId('id_utilisateur')->constrained('utilisateurs');
+        $table->string('final_mockup')->nullable();
+        $table->boolean('is_public')->default(false);
+        $table->string('color');
         $table->timestamps();
     });
 
@@ -62,21 +65,25 @@ return new class extends Migration
     Schema::create('images', function (Blueprint $table) {
         $table->id();
         $table->string('nom_image', 255)->nullable();
-        // هنا رديت البال للربط: كيربط مع 'id' ديال الجداول اللي فوق
         $table->foreignId('id_design')->nullable()->constrained('design')->onDelete('set null');
         $table->foreignId('id_mockup')->nullable()->constrained('mockup')->onDelete('set null');
         $table->foreignId('id_product')->nullable()->constrained('produits')->onDelete('set null');
+          $table->integer('x')->nullable();
+        $table->integer('y')->nullable();
+        $table->integer('width')->nullable();
+        $table->integer('height')->nullable();
            $table->timestamps();
     });
 
     // 6. Commandes
     Schema::create('commandes', function (Blueprint $table) {
-        $table->id();
-        $table->timestamp('date_commande')->useCurrent();
-        $table->string('statut_commande', 50)->nullable();
-        $table->foreignId('id_utilisateur')->constrained('utilisateurs');
-        $table->foreignId('id_adresse')->constrained('adresses');
-           $table->timestamps();
+       $table->id();
+    $table->foreignId('id_utilisateur')->constrained('utilisateurs');
+    $table->foreignId('id_adresse')->constrained('adresses');
+    $table->string('stripe_id')->nullable(); // هادا هو المعرف ديال العملية في سترايب
+    $table->decimal('total_price', 10, 2);
+    $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
+    $table->timestamps();
     });
 
     // 7. Pivot Tables

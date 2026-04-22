@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react'; // زدنا useContext هنا
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext'; // ضروري تزيد هاد السطر
+import { AuthContext } from '../context/AuthContext'; 
 import '../styles/Auth.css'; 
 
 const Auth = () => {
@@ -27,7 +27,7 @@ const Auth = () => {
     const handleLogin = async (e) => {
     e.preventDefault();
     try {
-        // استخرج المعطيات من loginData أولا
+        
         const { nom, mot_de_passe } = loginData; 
 
         const res = await axios.post('http://127.0.0.1:8000/api/login', { 
@@ -58,7 +58,7 @@ const Auth = () => {
 
     return (
         <div className={`container ${isSignUp ? 'sign-up-mode' : ''}`}>
-            {/* ... بقية الـ JSX ديالك ناضية ما تبدل فيها والو ... */}
+        
             <div className="forms-container">
                 <div className="signin-signup">
                     {/* فورم اللوجين */}
@@ -93,7 +93,7 @@ const Auth = () => {
                         </div>
                     </form>
 
-                    {/* فورم التسجيل */}
+                    
                     <form className="sign-up-form" onSubmit={handleRegister}>
                         <h2 className="title">S'inscrire</h2>
                         <div className="input-field">
