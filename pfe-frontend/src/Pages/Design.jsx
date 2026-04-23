@@ -30,7 +30,7 @@ const localImage = designData?.localImage || savedData?.localImage;
     const getProductImage = () => {
         const mapping = { 'T-shirt': 'th1', 'sweatshirt': 'hd1', 'chaier': 'bk1', 'horloge': 'rg1', 'tapis souris': 'tp1', 'pochette': 'ph1' };
         const baseName = mapping[category] || 'th1';
-        const colorSuffix = selectedColor === 'white' ? '' : `_${selectedColor}`;
+        const colorSuffix =  `_${selectedColor}`;
         const extension = (category === 'horloge' || category === 'tapis souris') ? '.png' : '.jpg';
         return `/img/${baseName}${colorSuffix}${extension}`;
     };

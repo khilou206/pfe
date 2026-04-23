@@ -80,7 +80,7 @@ return new class extends Migration
        $table->id();
     $table->foreignId('id_utilisateur')->constrained('utilisateurs');
     $table->foreignId('id_adresse')->constrained('adresses');
-    $table->string('stripe_id')->nullable(); // هادا هو المعرف ديال العملية في سترايب
+    $table->string('stripe_id')->nullable();
     $table->decimal('total_price', 10, 2);
     $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
     $table->timestamps();

@@ -36,7 +36,6 @@ const Auth = () => {
         });
         
         if (res.data.status === 'success') {
-            // استعمل دالة login من Context اللي ديجا مصاوب عندك
             login(res.data.user, res.data.access_token);
             navigate('/'); 
         }
@@ -128,7 +127,7 @@ const Auth = () => {
                         <h3>Nouveau ici ?</h3>
                         <p>Inscrivez-vous pour découvrir nos produits personnalisés.</p>
                         <button className="btn transparent" onClick={toggleMode}>S'inscrire</button>
-                        <button type="button" className="btn" style={{ backgroundColor: '#e74c3c' }} onClick={() => navigate('/')}>Annuler</button>
+                        <button type="button" className="btn" style={{ backgroundColor: '#08e700e4',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
                     </div>
                     <img src="/imgs/log.svg" className="image" alt="" />
                 </div>
@@ -137,7 +136,7 @@ const Auth = () => {
                         <h3>Déjà membre ?</h3>
                         <p>Connectez-vous pour accéder à votre espace personnel.</p>
                         <button className="btn transparent" onClick={toggleMode}>Se connecter</button>
-                        <button type="button" className="btn" style={{ backgroundColor: '#e74c3c' }} onClick={() => navigate('/')}>Annuler</button>
+                        <button type="button" className="btn" style={{ backgroundColor: '#7530f6',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
                     </div>
                     <img src="/imgs/register.svg" className="image" alt="" />
                 </div>

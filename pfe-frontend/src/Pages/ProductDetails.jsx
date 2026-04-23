@@ -19,14 +19,14 @@ const ProductDetail = () => {
             setLoading(true);
             try {
                 
-                const res = await axios.get(`http://127.0.0.1:8000/api/produits/${id}`);
+                const res = await axios.get(`http://127.0.0.1:8000/api/product/${id}`);
                 setProduit(res.data);
 
                 
-                const resRelated = await axios.get(`http://127.0.0.1:8000/api/produits`);
+                const resRelated = await axios.get(`http://127.0.0.1:8000/api/products`);
                
                 const filtered = resRelated.data
-                    .filter(p => p.id_produit !== parseInt(id))
+                    .filter(p => p.id !== parseInt(id))
                     .slice(0, 4);
                 setRelatedProducts(filtered);
             } catch (err) {
@@ -40,24 +40,21 @@ const ProductDetail = () => {
   
     const increaseCount = () => setCount(prev => prev + 1);
     const decreaseCount = () => setCount(prev => (prev > 1 ? prev - 1 : 1));
-
-    // Fonction d'ajout au panier
+//========================================================================================
     const addToCart = () => {
         const cartItem = {
-            id_produit: produit.id_produit,
-            nom: produit.nom,
+            id : produit.id,
+            nom: produit.nom_produit,
             prix: produit.prix,
-            image: produit.image,
+            image: produit.final_mockup,
             qte: count,
             size: selectedSize,
             color: selectedColor
         };
         
         let panier = JSON.parse(localStorage.getItem('panier')) || [];
-        
-        
         const existingIndex = panier.findIndex(p => 
-            p.id_produit === cartItem.id_produit && 
+            p.id === cartItem.id && 
             p.size === cartItem.size && 
             p.color === cartItem.color
         );
@@ -83,26 +80,25 @@ const ProductDetail = () => {
                     <div className="imageC">
                         <div 
                             className="img" 
-                            style={{ backgroundImage: `url(http://127.0.0.1:8000/storage/${produit.image})` }}
+                            style={{ backgroundImage: `url(http://127.0.0.1:8000/storage/${produit.final_mockup})` }}
                         ></div>
                         <div className="imgs">
                             {/* Thumbnails (Gallerie) */}
                             {[1, 2, 3, 4].map((_, i) => (
                                 <div className="imgcol" key={i}>
-                                    <img src={`http://127.0.0.1:8000/storage/${produit.image}`} alt="gallery" />
+                                    <img src={`http://127.0.0.1:8000/storage/${produit.final_mockup}`} alt="gallery" />
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* --- Right Side: Info --- */}
                     <div className="informationC">
                         <div className="product">
                             <div className="product-categorie">
-                                <h6>{produit.categorie_name || 'T-shirt'}</h6>
+                                <h6>{produit.categorie_produit || 'T-shirt'}</h6>
                             </div>
                             <div className="product-title">
-                                <h2>{produit.nom}</h2>
+                                <h2>{produit.nom_produit}</h2>
                             </div>
                             <div className="product-price">
                                 <p>{produit.prix} MAD</p>
@@ -178,11 +174,11 @@ const ProductDetail = () => {
                 <h2 className="tag">Related Products</h2>
                 <div className="related-products">
                     {relatedProducts.map(rp => (
-                        <div className="product-card" key={rp.id_produit}>
-                            <img src={`http://127.0.0.1:8000/storage/${rp.image}`} alt={rp.nom} />
-                            <h3>{rp.nom}</h3>
+                        <div className="product-card" key={rp.id}>
+                            <img src={`http://127.0.0.1:8000/storage/${rp.final_mockup}`} alt={rp.nom} />
+                            <h3>{rp.nom_produit}</h3>
                             <p>{rp.prix} MAD</p>
-                            <Link to={`/produit-detail/${rp.id_produit}`} className="btn">View Details</Link>
+                            <Link to={`/produits/${rp.id}`} className="btn">View Details</Link>
                         </div>
                     ))}
                 </div>

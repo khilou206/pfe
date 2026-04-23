@@ -13,6 +13,7 @@ import Upload from './Pages/Upload';
 import Design from './Pages/Design';
 import SuccessPage from './Pages/SuccessPage';
 import CancelPage from './Pages/CancelPage';
+import About from './Pages/About';
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/produit/:id" element={<ProductDetails />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/produits" element={<Produits />} />
@@ -30,6 +31,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/product-design" element={<Design />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/propos" element={<About />} />
         </Route>
        <Route path="/payment/success" element={<SuccessPage></SuccessPage>} />
        <Route path="/payment/cancel" element={<CancelPage></CancelPage>} />
