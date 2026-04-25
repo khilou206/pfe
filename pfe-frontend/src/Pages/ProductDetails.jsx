@@ -19,19 +19,11 @@ const ProductDetail = () => {
             setLoading(true);
             try {
                 
-<<<<<<< HEAD
-                const res = await axios.get(`http://127.0.0.1:8000/api/produits/${id}`);
-                setProduit(res.data);
-
-                
-                const resRelated = await axios.get(`http://127.0.0.1:8000/api/produits`);
-=======
                 const res = await axios.get(`http://127.0.0.1:8000/api/product/${id}`);
                 setProduit(res.data);
 
                 
                 const resRelated = await axios.get(`http://127.0.0.1:8000/api/products`);
->>>>>>> origin
                
                 const filtered = resRelated.data
                     .filter(p => p.id !== parseInt(id))
@@ -61,11 +53,6 @@ const ProductDetail = () => {
         };
         
         let panier = JSON.parse(localStorage.getItem('panier')) || [];
-<<<<<<< HEAD
-        
-        
-=======
->>>>>>> origin
         const existingIndex = panier.findIndex(p => 
             p.id === cartItem.id && 
             p.size === cartItem.size && 

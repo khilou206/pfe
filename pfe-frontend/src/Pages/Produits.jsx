@@ -25,12 +25,7 @@ const Produits = () => {
         const fetchProduits = async () => {
             setLoading(true);
             try {
-<<<<<<< HEAD
-            
-                let url = `http://127.0.0.1:8000/api/produits?`;
-=======
                 let url = `http://127.0.0.1:8000/api/products?`;
->>>>>>> origin
                 if (category !== 'all') url += `categorie=${category}&`;
                 if (query) url += `search=${query}`;
 
@@ -50,45 +45,6 @@ const Produits = () => {
     };
 
     return (
-<<<<<<< HEAD
-       
-        <main className="produitC">
-            
-        
-            <div style={{ width: '90vw', margin: '0 auto' }}>
-                <h2 className="tag">
-                    {query ? `Résultat de recherche pour "${query}"` : 
-                    (category === 'all' ? 'Nos Produits' : category.toUpperCase())}
-                </h2>
-                {query && <p>{produits.length} Résultats trouvés</p>}
-            </div>
-
-           
-            <section className="related-products">
-                {loading ? (
-                    <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '50px'}}>
-                        <h3>Chargement...</h3>
-                    </div>
-                ) : (
-                    produits.map((pro) => (
-                       
-                        <div className="product-card" key={pro.id_produit}>
-                            <img 
-                                src={`http://127.0.0.1:8000/storage/${pro.image}`} 
-                                alt={pro.nom} 
-                            />
-                            <h3>{pro.nom}</h3>
-                            <p>{pro.categorie_produit}</p>
-                            
-                          
-                            <h4 style={{ color: 'var(--color-accent)', fontWeight: 'bold', margin: '10px 0' }}>
-                                {pro.prix} MAD
-                            </h4>
-
-                            <Link to={`/produit-detail/${pro.id_produit}`} className="btn">
-                                Voir Détails
-                            </Link>
-=======
         <main className="produit-page-wrapper">
             {/* --- NAV BAR L-FOUQ GA3 --- */}
             <header className="page-header-nav">
@@ -100,23 +56,16 @@ const Produits = () => {
                             style={{ '--active-color': cat.color }}
                             onClick={() => handleCategoryClick(cat.name)}>
                             {cat.name === 'all' ? 'TOUS' : cat.name}
->>>>>>> origin
                         </div>
                     ))}
                 </nav>
             </header>
 
-<<<<<<< HEAD
-            {!loading && produits.length === 0 && (
-                <div style={{ width: '100%', textAlign: 'center', padding: '50px' }}>
-                    <p>Aucun produit ne correspond à votre recherche.</p>
-=======
             <div className="page-content">
                 <div className="content-header">
                     <h1 className="main-title">
                         {query}
                     </h1>
->>>>>>> origin
                 </div>
 
                 <section className="products-grid">
