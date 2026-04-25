@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class PaymentController extends Controller {
     public function checkout(Request $request) {
         // 1. إعداد Stripe
-        Stripe::setApiKey('sk_test_51TNfPRKG1wlMNonw4Vs0Ws0t7nvmCPuzB6Oc0SVtsQC9ipvvSx27atsOrzIMgke8xvYhHRW8ommvhoyD3KfUui9Q00yQ0tdniE');
+       Stripe::setApiKey(config('services.stripe.secret') ?? env('STRIPE_SECRET'));
         Stripe::setVerifySslCerts(false); // لتجاوز مشكلة SSL في XAMPP
 
         try {
@@ -82,7 +82,8 @@ class PaymentController extends Controller {
     }
 
     public function verify($sessionId) {
-        Stripe::setApiKey('sk_test_51TNfPRKG1wlMNonw4Vs0Ws0t7nvmCPuzB6Oc0SVtsQC9ipvvSx27atsOrzIMgke8xvYhHRW8ommvhoyD3KfUui9Q00yQ0tdniE');
+       // عوض ما تحط sk_test... حط هاد السطر:
+Stripe::setApiKey(config('services.stripe.secret') ?? env('STRIPE_SECRET'));
         Stripe::setVerifySslCerts(false);
         
         try {

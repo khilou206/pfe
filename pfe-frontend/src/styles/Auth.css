@@ -70,7 +70,7 @@ form.sign-in-form {
     color: #721c24;
     border: 1px solid #f5c6cb;
     padding: 10px;
-    border-radius: 55px; /* باش تجي دائرية بحال الـ inputs */
+    border-radius: 55px; 
     text-align: center;
     width: 100%;
     max-width: 380px;
@@ -145,7 +145,7 @@ form.sign-in-form {
 
 .btn {
   width: 150px;
-  background-color: #7D699A;
+  background-color: rgb(205, 46, 46);
   border: none;
   outline: none;
   height: 49px;
@@ -159,7 +159,7 @@ form.sign-in-form {
 }
 
 .btn:hover {
-  background-color: #4D3087;
+  background-color: red;
 }
 .panels-container {
   position: absolute;
@@ -179,7 +179,7 @@ form.sign-in-form {
   top: -10%;
   right: 48%;
   transform: translateY(-50%);
-  background-image: linear-gradient(-45deg, #4D3087 0%, #A43585 100%);
+  background-image: linear-gradient(90deg, #0fff4f, #c69e02, #7530f6);
   transition: 1.8s ease-in-out;
   border-radius: 50%;
   z-index: 6;

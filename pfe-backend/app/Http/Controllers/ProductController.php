@@ -31,56 +31,47 @@ class ProductController extends Controller
     ]);
 }
     public function saveFullDesign(Request $request)
-{
-    try {
-        
-        $design = \App\Models\Design::find($request->id_design);
-        if (!$design) return response()->json(['error' => 'Design non trouvé'], 404);
-
-        $mockupName = null;
-        if ($request->has('final_mockup') && !empty($request->final_mockup)) {
-            $imageData = $request->final_mockup;
-            
-            
-            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
-                $imageData = substr($imageData, strpos($imageData, ',') + 1);
-                $extension = strtolower($type[1]); // png, jpg, etc.
-                $imageData = base64_decode($imageData);
-                
-                $mockupName = 'mockup_' . time() . '.' . $extension;
-                \Storage::disk('public')->put('mockups/' . $mockupName, $imageData);
+    {
+        try {  
+            $design = \App\Models\Design::find($request->id_design);
+            if (!$design) return response()->json(['error' => 'Design non trouvé'], 404);
+            $mockupName = null;
+            if ($request->has('final_mockup') && !empty($request->final_mockup)) {
+                $imageData = $request->final_mockup;
+                if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
+                    $imageData = substr($imageData, strpos($imageData, ',') + 1);
+                    $extension = strtolower($type[1]); 
+                    $imageData = base64_decode($imageData);
+                    
+                    $mockupName = 'mockup_' . time() . '.' . $extension;
+                    \Storage::disk('public')->put('mockups/' . $mockupName, $imageData);
+                }
             }
+            $produit = Produit::create([
+                'nom_produit'         => $request->title ?? 'Produit Personnalisé',
+                'categorie_produit'   => $request->category,
+                'description_produit' => $request->description,
+                'prix'                => $request->price, 
+                'id_utilisateur'      => $request->id_utilisateur, 
+                'is_public'           => $request->is_public ?? 0,
+                'color'               => $request->color,
+                'final_mockup'        => $mockupName, 
+            ]);
+            Image::create([
+                'nom_image'  => $design->nom_design, 
+                'id_design'  => $request->id_design,
+                'id_product' => $produit->id,
+                'x'          => (int)$request->x,     
+                'y'          => (int)$request->y,      
+                'width'      => (int)$request->width,  
+                'height'     => (int)$request->height  
+            ]);
+
+            return response()->json(['status' => 'success', 'message' => 'Produit enregistré !'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        $produit = Produit::create([
-            'nom_produit'         => $request->title ?? 'Produit Personnalisé',
-            'categorie_produit'   => $request->category,
-            'description_produit' => $request->description,
-            'prix'                => $request->price, 
-            'id_utilisateur'      => $request->id_utilisateur, 
-            'is_public'           => $request->is_public ?? 0,
-            'color'               => $request->color,
-            'final_mockup'        => $mockupName, 
-        ]);
-
-        // 3. تسجيل إحداثيات الصورة
-        Image::create([
-            'nom_image'  => $design->nom_design, 
-            'id_design'  => $request->id_design,
-            'id_product' => $produit->id,
-            'x'          => (int)$request->x,     
-            'y'          => (int)$request->y,      
-            'width'      => (int)$request->width,  
-            'height'     => (int)$request->height  
-        ]);
-
-        return response()->json(['status' => 'success', 'message' => 'Produit enregistré !'], 201);
-        
-    } catch (\Exception $e) {
-        
-        return response()->json(['error' => $e->getMessage()], 500);
     }
-}
 
     public function getUserCart(Request $request) {
     
@@ -115,11 +106,9 @@ class ProductController extends Controller
         if ($request->has('categorie')) {
             $query->where('categorie_produit', $request->categorie);
         }
-
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-
                 $q->where('nom_produit', 'LIKE', "%{$search}%")
                   ->orWhere('description_produit', 'LIKE', "%{$search}%");
             });
