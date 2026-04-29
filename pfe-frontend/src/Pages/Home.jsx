@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, MoveRight } from 'lucide-react';
-import './Home.css';
+import '../styles/Home.css';
 
 const Home = () => {
   
