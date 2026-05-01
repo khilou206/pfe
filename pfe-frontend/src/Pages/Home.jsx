@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, MoveRight } from 'lucide-react';
 import '../styles/Home.css';
+import AboutLight from '../Components/WorkProcess';
 
 const Home = () => {
   
@@ -123,6 +124,7 @@ const Home = () => {
     </div>
   </div>
 </section>
+<AboutLight />
     </>
 };
 
