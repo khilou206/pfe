@@ -1,0 +1,206 @@
+.h-owner-wrapper {
+    padding: 40px 10px;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.h-owner-container {
+    max-width: 1100px;
+    width: 100%;
+}
+
+.h-owner-card-glass {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 80px;
+    background: #fbfbfd;
+    border-radius: 48px;
+    padding: 80px;
+    border: 1px solid rgba(0,0,0,0.03);
+    position: relative;
+    align-items: center;
+    transition: all 0.5s ease;
+}
+
+/* Decoration Blob */
+.h-visual-blob {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(0, 113, 227, 0.1), rgba(192, 132, 252, 0.1));
+    filter: blur(60px);
+    z-index: 1;
+    top: 10%;
+    left: 5%;
+}
+
+/* Image Frame */
+.h-owner-visual {
+    position: relative;
+    z-index: 2;
+}
+
+.h-image-frame {
+    position: relative;
+    width: 100%;
+    border-radius: 40px;
+    overflow: visible;
+}
+
+.h-main-avatar {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    border-radius: 40px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+    background: #eee;
+}
+
+.h-badge-experience {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    background: #1d1d1f;
+    color: white;
+    padding: 20px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.h-exp-num { font-size: 1.5rem; font-weight: 800; }
+.h-exp-text { font-size: 0.6rem; font-weight: 600; letter-spacing: 1px; opacity: 0.8; }
+
+/* Details Styling */
+.h-owner-details {
+    z-index: 2;
+}
+
+.h-intro-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.h-line-dec {
+    width: 40px;
+    height: 2px;
+    background: #0071e3;
+}
+
+.h-subtitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: #86868b;
+    letter-spacing: 2px;
+}
+
+.h-title-name {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #1d1d1f;
+    line-height: 1.1;
+    margin-bottom: 30px;
+    letter-spacing: -2px;
+}
+
+.h-accent-dot { color: #0071e3; }
+
+.h-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #424245;
+    margin-bottom: 40px;
+}
+
+.h-highlight {
+    color: #1d1d1f;
+    font-weight: 700;
+    border-bottom: 2px solid #0071e3;
+}
+
+/* Stats */
+.h-stats-mini {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 50px;
+}
+
+.h-stat-item strong {
+    display: block;
+    font-size: 1.8rem;
+    color: #1d1d1f;
+}
+
+.h-stat-item span {
+    font-size: 0.9rem;
+    color: #86868b;
+    font-weight: 500;
+}
+
+/* Footer Buttons */
+.h-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.h-social-group {
+    display: flex;
+    gap: 12px;
+}
+
+.h-icon-btn {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid #e5e5e7;
+    color: #1d1d1f;
+    transition: 0.3s;
+}
+
+.h-icon-btn:hover {
+    background: #1d1d1f;
+    color: white;
+    transform: translateY(-5px);
+}
+
+.h-action-button {
+    background: #0071e3;
+    color: white;
+    padding: 18px 36px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.h-action-button:hover {
+    background: #005bb7;
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(0, 113, 227, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .h-owner-card-glass { grid-template-columns: 1fr; padding: 40px; text-align: center; gap: 40px; }
+    .h-intro-header { justify-content: center; }
+    .h-title-name { font-size: 2.8rem; }
+    .h-stats-mini { justify-content: center; }
+    .h-footer-links { flex-direction: column; }
+    .h-main-avatar { height: 350px; }
+}

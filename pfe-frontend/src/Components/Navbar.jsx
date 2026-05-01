@@ -40,10 +40,8 @@ useEffect(() => {
   return (
     <header className={`creative-header ${isScrolled ? 'scrolled' : ''}`}>
       <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{ width: '32px', height: '32px', background: 'var(--logo-gradient)', borderRadius: '6px' }}></div>
-        <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-main)', letterSpacing: '0.5px' }}>
-          KHALIFI <span className="gradient-text">PUB</span>
-        </span>
+        <img src='imgs/about/logo.png' alt='logo' style={{ width: '140px', height: '130px'}}/>
+        
       </Link>
 
       <nav style={{ display: 'flex', gap: '2.5rem' }}>

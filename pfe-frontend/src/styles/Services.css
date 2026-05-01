@@ -1,0 +1,125 @@
+.h-uni-section {
+    padding: 10px 20px;
+    background: #ffffff;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.h-uni-header {
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.h-uni-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #1d1d1f;
+    letter-spacing: -1.5px;
+    margin-bottom: 10px;
+}
+
+.h-uni-line {
+    width: 60px;
+    height: 4px;
+    background: #0071e3;
+    border-radius: 2px;
+}
+
+/* --- Uniform Grid (5 columns per row for 10 images) --- */
+.h-uni-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px;
+}
+
+.h-uni-card {
+    position: relative;
+    width: 100%;
+}
+
+.h-uni-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Hada hwa li kikhlihom morabba3at kamilin */
+    overflow: hidden;
+    border-radius: 12px; /* Chwiya d l-arrondi bach ijiw modern */
+    background: #f5f5f7;
+}
+
+.h-uni-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Bach tswira mat-t-kmechch */
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Overlay Style */
+.h-uni-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(29, 29, 31, 0.7); /* Dark semi-transparent */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(4px);
+    padding: 15px;
+    text-align: center;
+}
+
+.h-uni-card:hover .h-uni-overlay {
+    opacity: 1;
+}
+
+.h-uni-card:hover .h-uni-img {
+    transform: scale(1.1);
+}
+
+.h-uni-text {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.h-uni-plus {
+    width: 30px;
+    height: 30px;
+    border: 1px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+/* --- Tablet (3 per row) --- */
+@media (max-width: 1024px) {
+    .h-uni-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* --- Mobile (2 per row) --- */
+@media (max-width: 600px) {
+    .h-uni-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .h-uni-title {
+        font-size: 2rem;
+    }
+    .h-uni-overlay {
+        opacity: 1; /* On mobile, let it be visible or use a simpler style */
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        justify-content: flex-end;
+    }
+    .h-uni-plus { display: none; }
+}
