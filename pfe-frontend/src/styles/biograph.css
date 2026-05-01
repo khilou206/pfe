@@ -1,3 +1,6 @@
+:root{
+ --loon :linear-gradient(90deg, #0fff4f, #c69e02, #7530f6);
+}
 .h-owner-wrapper {
     padding: 40px 10px;
     background: #ffffff;
@@ -90,7 +93,7 @@
 .h-line-dec {
     width: 40px;
     height: 2px;
-    background: #0071e3;
+    background: var(--loon);
 }
 
 .h-subtitle {
@@ -109,7 +112,9 @@
     letter-spacing: -2px;
 }
 
-.h-accent-dot { color: #0071e3; }
+.h-accent-dot { background: var(--logo-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;}
 
 .h-description {
     font-size: 1.2rem;
@@ -121,7 +126,7 @@
 .h-highlight {
     color: #1d1d1f;
     font-weight: 700;
-    border-bottom: 2px solid #0071e3;
+    border-bottom: 2px solid ;
 }
 
 /* Stats */
@@ -175,7 +180,7 @@
 }
 
 .h-action-button {
-    background: #0071e3;
+    background: linear-gradient(90deg, #0fff4f, #c69e02, #7530f6);
     color: white;
     padding: 18px 36px;
     border-radius: 100px;
@@ -190,7 +195,7 @@
 }
 
 .h-action-button:hover {
-    background: #005bb7;
+    background: linear-gradient(90deg, #0fff4f, #c69e02, #7530f6);
     transform: scale(1.03);
     box-shadow: 0 20px 40px rgba(0, 113, 227, 0.2);
 }

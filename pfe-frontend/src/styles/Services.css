@@ -23,7 +23,7 @@
 .h-uni-line {
     width: 60px;
     height: 4px;
-    background: #0071e3;
+    background: linear-gradient(90deg, #0fff4f, #c69e02, #7530f6);;
     border-radius: 2px;
 }
 

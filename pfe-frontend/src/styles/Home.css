@@ -253,3 +253,7 @@ h1, h2, h3, h4, p, span, a {
   .f-img { width: 80px; height: 80px; opacity: 0.3; }
   .img-3 { display: none; } 
 }
+.imgTa img{
+  width: 100%;
+  height: 400px;
+}
