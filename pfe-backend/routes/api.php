@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
@@ -62,4 +62,17 @@ Route::post('/upload-design', [UploadController::class, 'uploadDesign']);
 
   Route::get('/designs/{id}', [UploadController::class, 'showDesign']);
   Route::middleware('auth:sanctum')->get('/my-cart', [ProductController::class, 'getUserCart']);
+});
+Route::middleware(['auth:sanctum', 'checkAdmin'])->prefix('admin')->group(function () {
+    
+    // الإحصائيات
+    Route::get('/stats', [AdminController::class, 'getDashboardStats']);
+    
+    // الطلبات
+    Route::get('/orders', [AdminController::class, 'getAllOrders']);
+    Route::put('/orders/{id}/status', [AdminController::class, 'updateOrderStatus']);
+    
+    // المستخدمين
+    Route::get('/clients', [AdminController::class, 'getAllClients']);
+    
 });

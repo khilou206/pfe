@@ -11,9 +11,17 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    // bootstrap/app.php
+
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'checkAdmin' => \App\Http\Middleware\CheckAdmin::class,
+    ]);
+})
     ->withMiddleware(function (Middleware $middleware): void {
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+    

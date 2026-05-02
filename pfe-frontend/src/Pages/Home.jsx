@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, MoveRight } from 'lucide-react';
-import './Home.css';
+import '../styles/Home.css';
+import AboutLight from '../Components/WorkProcess';
 
 const Home = () => {
   
@@ -63,6 +64,9 @@ const Home = () => {
         </div>
       </div>
     </section>
+    <section className='imgTa'>
+      <img src="imgs/about/cover.png" alt="" />
+    </section>
     <section className="premium-features">
   <div className="bento-grid">
     {/* Card 1 - Blue */}
@@ -120,6 +124,7 @@ const Home = () => {
     </div>
   </div>
 </section>
+<AboutLight />
     </>
 };
 

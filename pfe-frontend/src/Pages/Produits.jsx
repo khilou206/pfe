@@ -11,6 +11,7 @@ const Produits = () => {
     const category = searchParams.get('categorie_produit') || 'all';
     const query = searchParams.get('search') || '';
 
+    // Palette dyal l-alwan l-vibrant dyal l-matba3a
     const categoriesList = [
         { name: 'all', color: '#1a1a1a' },
         { name: 'T-SHIRT', color: '#ff3e6c' },
@@ -20,6 +21,12 @@ const Produits = () => {
         { name: 'POCHETTE', color: '#06d6a0' },
         { name: 'HORLOGE', color: '#ef476f' }
     ];
+    const activeCategory = categoriesList.find(
+        (cat) => cat.name === category
+    );
+    const isDarkColor = (color) => {
+        return color === '#111' || color === '#1a1a1a';
+    };
 
     useEffect(() => {
         const fetchProduits = async () => {
@@ -28,7 +35,6 @@ const Produits = () => {
                 let url = `http://127.0.0.1:8000/api/products?`;
                 if (category !== 'all') url += `categorie=${category}&`;
                 if (query) url += `search=${query}`;
-
                 const res = await axios.get(url);
                 setProduits(res.data);
             } catch (err) {
@@ -37,60 +43,81 @@ const Produits = () => {
             setLoading(false);
         };
         fetchProduits();
-        window.scrollTo(0, 0); // Bach mlli t-clicki t-tla3 l-fouq
+        window.scrollTo(0, 0);
     }, [category, query]);
 
-    const handleCategoryClick = (catName) => {
-        setSearchParams({ categorie_produit: catName });
+    const handleAddToCart = (e, product) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Hna zid l-logic dyal l-panier dyalk (Context aw Redux)
+       alert(`Produit ajouté au: ${product.nom_produit}`);
     };
 
     return (
-        <main className="produit-page-wrapper">
-            {/* --- NAV BAR L-FOUQ GA3 --- */}
-            <header className="page-header-nav">
-                <nav className="nav-wrapper">
+        <div className="pp-page-container">
+            {/* --- Category Navigation (Under Main Header) --- */}
+            <nav className="pp-category-nav">
+                <div className="pp-nav-wrapper">
                     {categoriesList.map((cat) => (
-                        <div 
+                        <button 
                             key={cat.name} 
-                            className={`nav-item ${category === cat.name ? 'active' : ''}`}
-                            style={{ '--active-color': cat.color }}
-                            onClick={() => handleCategoryClick(cat.name)}>
+                            className={`pp-nav-item ${category === cat.name ? 'pp-active' : ''}`}
+                            style={{ '--pp-accent': cat.color }}
+                            onClick={() => setSearchParams({ categorie_produit: cat.name })}
+                        >
                             {cat.name === 'all' ? 'TOUS' : cat.name}
-                        </div>
+                        </button>
                     ))}
-                </nav>
-            </header>
-
-            <div className="page-content">
-                <div className="content-header">
-                    <h1 className="main-title">
-                        {query}
-                    </h1>
                 </div>
+            </nav>
 
-                <section className="products-grid">
+            <main className="pp-main-content" >
+                <header className="pp-header-section" style={{ backgroundColor: activeCategory?.color || '#111' }}>
+                    <h1 className="pp-page-title" style={{ color: isDarkColor(activeCategory?.color) ? '#fff' : '#111'}}>
+                        {query ? `Résultats: "${query}"` : 'Nos Produits'}
+                    </h1>
+                </header>
+
+                <div className="pp-products-grid">
                     {loading ? (
-                        <div className="loader-container"><div className="spinner"></div></div>
+                        <div className="pp-loader-box">
+                            <div className="pp-spinner"></div>
+                            <p>Chargement des produits...</p>
+                        </div>
                     ) : (
                         produits.map((pro) => (
-                            <div className="modern-product-card" key={pro.id}>
-                                <div className="image-container">
-                                    <img src={`http://127.0.0.1:8000/storage/mockups/${pro.final_mockup}`} alt={pro.nom_produit} />
+                            <div className="pp-product-card" key={pro.id}>
+                                <div className="pp-image-holder">
+                                    <img 
+                                        src={`http://127.0.0.1:8000/storage/mockups/${pro.final_mockup}`} 
+                                        alt={pro.nom_produit} 
+                                    />
                                 </div>
-                                <div className="card-info">
-                                    <span className="cat-tag">{pro.categorie_produit}</span>
-                                    <h3>{pro.nom_produit}</h3>
-                                    <div className="card-footer">
-                                        <span className="price">{pro.prix} MAD</span>
-                                        <Link to={`/produit/${pro.id}`} className="view-btn">Détails</Link>
+                                <div className="pp-info-holder">
+                                    <span className="pp-tag">{pro.categorie_produit}</span>
+                                    <h3 className="pp-name">{pro.nom_produit}</h3>
+                                    <div className="pp-footer">
+                                        <span className="pp-price">{pro.prix} MAD</span>
+                                        <div className="pp-actions">
+                                            <Link to={`/produit/${pro.id}`} className="pp-details-link">
+                                                Détails
+                                            </Link>
+                                            <button className="pp-add-cart-btn" onClick={(e) => handleAddToCart(e, pro)}> + Panier </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         ))
                     )}
-                </section>
-            </div>
-        </main>
+                </div>
+
+                {!loading && produits.length === 0 && (
+                    <div className="pp-empty">
+                        <p>Aucun produit trouvé pour cette sélection.</p>
+                    </div>
+                )}
+            </main>
+        </div>
     );
 };
 

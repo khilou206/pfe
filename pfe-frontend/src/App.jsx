@@ -14,6 +14,7 @@ import Design from './Pages/Design';
 import SuccessPage from './Pages/SuccessPage';
 import CancelPage from './Pages/CancelPage';
 import About from './Pages/About';
+import AdminDashboard from './Pages/AdminDashboard';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/product-design" element={<Design />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/propos" element={<About />} />
+           <Route path="/AdminDashboard" element={<AdminDashboard />} />
         </Route>
        <Route path="/payment/success" element={<SuccessPage></SuccessPage>} />
        <Route path="/payment/cancel" element={<CancelPage></CancelPage>} />

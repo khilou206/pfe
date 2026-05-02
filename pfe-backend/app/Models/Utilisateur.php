@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Models;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -12,30 +12,29 @@ class Utilisateur extends Authenticatable
 
     protected $table = 'utilisateurs';
     
-    protected $fillable = [
-        'nom', 
-        'role', 
-        'email', 
-        'mot_de_passe', 
-        'tel'
-    ];
+    protected $fillable = ['nom', 'role', 'email', 'mot_de_passe', 'tel'];
 
-    protected $hidden = [
-        'mot_de_passe',
-    ];
+    protected $hidden = ['mot_de_passe'];
 
-    public function getAuthPassword() 
-    { 
+    public function getAuthPassword() { 
         return $this->mot_de_passe; 
     }
+
+    // دالة مساعدة للـ Admin Middleware
+    public function isAdmin() {
+        return $this->role === 'administrateur';
+    }
     
-    public function designs(): HasMany
-    { 
+    public function designs(): HasMany { 
         return $this->hasMany(Design::class, 'id_utilisateur'); 
     }
 
-    public function adresses(): HasMany 
-    { 
+    public function adresses(): HasMany { 
         return $this->hasMany(Adresse::class, 'id_utilisateur'); 
+    }
+
+    // علاقة مع المنتجات (الـ Mockups اللي صاوب المستخدم)
+    public function produits(): HasMany { 
+        return $this->hasMany(Produit::class, 'id_utilisateur'); 
     }
 }

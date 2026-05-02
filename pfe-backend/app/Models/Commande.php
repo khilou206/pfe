@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,18 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 class Commande extends Model {
     protected $table = 'commandes';
 
-    protected $primaryKey = 'id'; 
-
     protected $fillable = [
         'id_utilisateur', 
         'id_adresse', 
+        'reference_commande', // الحقل الجديد
         'total_price', 
         'status', 
         'stripe_id'
     ];
 
+    // علاقة مع المستخدم (باش الـ Admin يعرف شكون مول الطلب)
+    public function utilisateur() {
+        return $this->belongsTo(Utilisateur::class, 'id_utilisateur');
+    }
+
+    // علاقة مع العنوان
+    public function adresse() {
+        return $this->belongsTo(Adresse::class, 'id_adresse');
+    }
+
     public function produits() {
-        
         return $this->belongsToMany(Produit::class, 'porter', 'id_commande', 'id_product')
                     ->withPivot('qte', 'color')
                     ->withTimestamps();
