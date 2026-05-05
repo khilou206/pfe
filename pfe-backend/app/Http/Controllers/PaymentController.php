@@ -96,7 +96,8 @@ class PaymentController extends Controller
                     'mode'                 => 'payment',
 
                     // 🔁 Redirect URLs
-                    'success_url' => url('/payment/success?session_id={CHECKOUT_SESSION_ID}'),
+       // إذا كان React خدام في منفذ 3000
+'success_url' => 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
                     'cancel_url'  => url('/cart'),
 
                     // 🧠 Metadata for tracking order
