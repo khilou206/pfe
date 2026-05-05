@@ -26,7 +26,7 @@ class CommandeController extends Controller
             return DB::transaction(function () use ($request) {
                 
             
-                $user_id = auth()->id() ?? 'visiteur';
+                $user_id = auth()->id() ;
 
                 $adresse = Adresse::create([
                     'ville'          => $request->city,
@@ -36,26 +36,25 @@ class CommandeController extends Controller
                 ]);
 
               
-                $commande = Commande::create([
-                    'date_commande'   => now(),
-                    'statut_commande' => 'en attente',
-                    'id_adresse'      => $adresse->id_adresse,
-                    'id_utilisateur'  => $user_id
-                ]);
+               $commande = Commande::create([
+    'id_utilisateur' => $user_id,
+    'id_adresse' => $adresse->id,
+    'total_price' => 0,
+    'status' => 'pending',
+]);
 
                
-                foreach ($request->produits as $item) {
-                   
-                    $commande->produits()->attach($item['id'], [
-                        'qte'   => $item['qte'],
-                        'color' => $item['color'] ?? 'default'
-                    ]);
-                }
+               foreach ($request->produits as $item) {
+    
+    $commande->produits()->attach($item['id'], [
+        'qte'   => $item['qte']
+    ]);
+}
 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Commande créée avec succès',
-                    'commande_id' => $commande->id_commande
+                    'commande_id' => $commande->id
                 ], 201);
             });
 

@@ -4,6 +4,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
+
 const SuccessPage = () => {
     const [searchParams] = useSearchParams();
     const { token } = useContext(AuthContext);

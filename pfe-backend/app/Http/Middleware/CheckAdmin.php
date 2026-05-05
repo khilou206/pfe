@@ -1,29 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Middleware; // تأكد أنها Middleware ماشي Controllers
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckAdmin
 {
-    /**
-     * Handle an incoming request.
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        // 1. واش المستخدم داير Login؟
-        // 2. واش الـ role ديالو هو 'administrateur'؟
+        // تأكد أن المستخدم "أدمين" حسب السيستيم ديالك
         if (Auth::check() && Auth::user()->role === 'administrateur') {
             return $next($request);
         }
 
-        // إيلا ما كانش admin، صيفط ليه Error 403 (Forbidden)
-        return response()->json([
-            'status' => 'failed',
-            'message' => 'Accès refusé. Réservé aux administrateurs.'
-        ], 403);
+        return response()->json(['message' => 'Accès refusé. Vous n\'êtes pas administrateur.'], 403);
     }
 }

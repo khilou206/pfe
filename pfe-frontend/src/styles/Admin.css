@@ -1,21 +1,350 @@
-.status {
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
+/* ========================================
+   ADMIN DASHBOARD - Admin.css
+   ======================================== */
+
+/* ---- Sidebar Nav Buttons ---- */
+.nav-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 25px;
+    margin-bottom: 15px;
+    background: white;
+    border: 2px solid #4d3087;
+    border-radius: 12px;
+    color: #4d3087;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
 }
 
-.status.paid { background: #d4edda; color: #155724; }
-.status.pending { background: #fff3cd; color: #856404; }
-.status.failed { background: #f8d7da; color: #721c24; }
-.status.shipped { background: #d1ecf1; color: #0c5460; }
+.nav-btn:hover {
+    background: #ede7f6;
+    transform: translateX(4px);
+}
 
-.admin-loader {
+.nav-btn.active {
+    background: #4d3087;
+    color: white;
+    box-shadow: 0 4px 12px rgba(77, 48, 135, 0.35);
+}
+
+/* ---- Stat Cards ---- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    border-top: 4px solid #4d3087;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-card h3 {
+    font-size: 30px;
+    color: #4d3087;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+}
+
+.stat-card p {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ---- Chart Container ---- */
+.chart-container {
+    grid-column: 1 / -1;
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    margin-top: 10px;
+}
+
+.chart-container h3 {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* ---- Orders Table ---- */
+.table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.admin-table thead {
+    background: #4d3087;
+    color: white;
+}
+
+.admin-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    color: #333;
+    vertical-align: top;
+}
+
+.admin-table tbody tr:hover {
+    background: #faf7ff;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ---- Status Badges ---- */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    text-transform: capitalize;
+}
+
+.status-badge.paid {
+    background: #e6fffa;
+    color: #2e9e8f;
+}
+
+.status-badge.pending {
+    background: #fffaf0;
+    color: #dd6b20;
+}
+
+.status-badge.shipped {
+    background: #ebf8ff;
+    color: #2b6cb0;
+}
+
+.status-badge.delivered {
+    background: #f0fff4;
+    color: #276749;
+}
+
+/* ---- Status Select ---- */
+.status-select {
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    cursor: pointer;
+    background: #fff;
+    color: #333;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.status-select:focus {
+    border-color: #4d3087;
+}
+
+/* ---- Order Product Item ---- */
+.order-product-item {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 10px 0;
+    margin-bottom: 5px;
+}
+
+.order-product-item:last-child {
+    border-bottom: none;
+}
+
+/* ---- Mockup Form ---- */
+.add-mockup-section h2 {
+    font-size: 22px;
+    color: #4d3087;
+    margin-bottom: 20px;
+}
+
+.admin-form {
+    max-width: 600px;
+    background: #f8f6fc;
+    padding: 25px;
+    border-radius: 14px;
+    border: 1px solid #e4d9f5;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4d3087;
+    margin-bottom: 6px;
+}
+
+.input-group input[type="text"],
+.input-group input[type="number"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d0b8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #fff;
+    outline: none;
+    transition: border 0.2s;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    border-color: #4d3087;
+    box-shadow: 0 0 0 3px rgba(77, 48, 135, 0.1);
+}
+
+.input-group input[type="file"] {
+    font-size: 13px;
+    color: #555;
+    padding: 6px 0;
+}
+
+/* ---- Main Submit Button ---- */
+.main-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: #4d3087;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(77, 48, 135, 0.3);
+}
+
+.main-btn:hover {
+    background: #3b2268;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(77, 48, 135, 0.4);
+}
+
+.main-btn:active {
+    transform: translateY(0);
+}
+
+/* ---- Section Header ---- */
+.section-p1 h2 {
+    font-size: 22px;
+    color: #4d3087;
+    margin-bottom: 20px;
+    font-weight: 700;
+    border-left: 4px solid #4d3087;
+    padding-left: 12px;
+}
+
+/* ---- Loading ---- */
+.loading {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: 'Montserrat', sans-serif;
-    color: #FFD600;
+    font-size: 18px;
+    color: #4d3087;
+}
+
+/* ---- Modal ---- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-content h3 {
+    font-size: 18px;
+    color: #4d3087;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.modal-content p {
+    font-size: 14px;
+    color: #444;
+    margin: 6px 0;
+}
+
+.modal-content p strong {
+    color: #333;
+    min-width: 100px;
+    display: inline-block;
+}
+
+/* ---- Admin Dashboard Wrapper ---- */
+.admin-dashboard {
+    min-height: 100vh;
+    background: #f5f3fa;
+}
+
+.admin-sidebar {
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+}
+
+.admin-content {
+    flex: 1;
 }

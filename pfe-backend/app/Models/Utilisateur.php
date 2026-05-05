@@ -20,7 +20,7 @@ class Utilisateur extends Authenticatable
         return $this->mot_de_passe; 
     }
 
-    // دالة مساعدة للـ Admin Middleware
+    
     public function isAdmin() {
         return $this->role === 'administrateur';
     }
@@ -33,7 +33,7 @@ class Utilisateur extends Authenticatable
         return $this->hasMany(Adresse::class, 'id_utilisateur'); 
     }
 
-    // علاقة مع المنتجات (الـ Mockups اللي صاوب المستخدم)
+    
     public function produits(): HasMany { 
         return $this->hasMany(Produit::class, 'id_utilisateur'); 
     }

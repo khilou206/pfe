@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mockup extends Model {
     protected $table = 'mockup';
-  protected $primaryKey = 'id';
-    public function images() { return $this->hasMany(Image::class, 'id_mockup'); }
+    protected $fillable = ['nom_mockup', 'prix_base', 'colors', 'categorie_mockup'];
+
+    protected $casts = [
+        'colors' => 'array',
+    ];
+
+    public function produits() {
+        return $this->hasMany(Produit::class, 'id_mockup');
+    }
 }

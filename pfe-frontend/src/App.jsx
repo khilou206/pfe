@@ -15,32 +15,47 @@ import SuccessPage from './Pages/SuccessPage';
 import CancelPage from './Pages/CancelPage';
 import About from './Pages/About';
 import AdminDashboard from './Pages/AdminDashboard';
-
+import { AdminRoute, UserRoute } from './context/ProtectedRoute';
 
 function App() {
   return (
     <AuthProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/produit/:id" element={<ProductDetails />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/panier" element={<Panier />} />
-          <Route path="/produits" element={<Produits />} />
-          <Route path="/checkout" element={<Checkout></Checkout>} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/product-design" element={<Design />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/propos" element={<About />} />
-           <Route path="/AdminDashboard" element={<AdminDashboard />} />
-        </Route>
-       <Route path="/payment/success" element={<SuccessPage></SuccessPage>} />
-       <Route path="/payment/cancel" element={<CancelPage></CancelPage>} />
-        <Route path="/login" element={<Auth />} />
+      <BrowserRouter>
+        <Routes>
+          {/* الروابط العامة (بجوج يقدروا يشوفوهم) */}
+          <Route path="/login" element={<Auth />} />
+ <Route path="/product-design" element={<Design />} />
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/propos" element={<About />} />
+              <Route path="/upload" element={<Upload />} />
+                <Route path="/Produits" element={<Produits />} />
+                   <Route path="/produit/:id" element={<ProductDetails />} />
+                        <Route path="/panier" element={<Panier />} />
+                            <Route path="/checkout" element={<Checkout />} />
+            
+            {/* --- مسارات خاصة فقط بالمستخدم العادي (Utilisateur) --- */}
+            <Route element={<UserRoute />}>
+             
+           
+            
+                <Route path="/profile" element={<Profile />} />
+               
+              
+              
+            </Route>
 
-      </Routes>
-    </BrowserRouter>
+            {/* --- مسارات خاصة فقط بالـ Admin --- */}
+            <Route element={<AdminRoute />}>
+                <Route path="/AdminDashboard" element={<AdminDashboard />} />
+                {/* تقدر تزيد هنا أي صفحة خاصة بالـ admin بحال /admin/orders */}
+            </Route>
+          </Route>
+
+          <Route path="/payment/success" element={<SuccessPage />} />
+          <Route path="/payment/cancel" element={<CancelPage />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

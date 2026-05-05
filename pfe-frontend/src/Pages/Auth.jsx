@@ -28,30 +28,23 @@ const Auth = () => {
     e.preventDefault();
     try {
         const { nom, mot_de_passe } = loginData; 
-
-        const res = await axios.post('http://127.0.0.1:8000/api/login', { 
-            nom, 
-            mot_de_passe 
-        });
+        const res = await axios.post('http://127.0.0.1:8000/api/login', { nom, mot_de_passe });
         
-if (res.data.status === 'success') {
-    localStorage.setItem('auth_token', res.data.access_token);
-    // سيف بيانات المستخدم كاملة (بما فيها الـ role) باش نقراوها في الـ Dashboard
-    localStorage.setItem('user', JSON.stringify(res.data.user)); 
-    
-    login(res.data.user, res.data.access_token);
-    
-    if (res.data.user.role === 'admin') {
-        navigate('/AdminDashboard');
-    } else {
-        navigate('/'); 
-    }
-}
+        if (res.data.status === 'success') {
+            const userData = res.data.user;
+            login(userData, res.data.access_token);
+            
+            // التوجيه الذكي
+            if (userData.role === 'administrateur') {
+                navigate('/AdminDashboard');
+            } else {
+                navigate('/');
+            }
+        }
     } catch (err) {
         setError("Nom ou mot de passe incorrect");
     }
 };
-
     const handleRegister = async (e) => {
         e.preventDefault();
         try {

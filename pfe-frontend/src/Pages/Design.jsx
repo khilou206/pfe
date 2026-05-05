@@ -1,169 +1,466 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Rnd } from 'react-rnd';
-import axios from 'axios';
-import {  useNavigate } from 'react-router-dom';
-import html2canvas from 'html2canvas';
-import { AuthContext } from '../context/AuthContext';
-import '../styles/Design.css';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 
+import { Rnd } from 'react-rnd';
+
+import axios from 'axios';
+
+import { useNavigate } from 'react-router-dom';
+
+import html2canvas from 'html2canvas';
+
+import { AuthContext } from '../context/AuthContext';
+
+import '../styles/Design.css';
+import { Grab } from 'lucide-react';
 
 
 
 const Design = () => {
-   
+
     const navigate = useNavigate();
-    
-   const { user, token, designData } = useContext(AuthContext);
- const savedData = JSON.parse(localStorage.getItem('designData') || 'null');
 
-const idDesign = designData?.idDesign || savedData?.idDesign;
-const category = designData?.category || savedData?.category || 'T-shirt';
-const localImage = designData?.localImage || savedData?.localImage;
-    const [isPublic, setIsPublic] = useState(false);
+    const { user, token, designData } = useContext(AuthContext); 
+
+    const captureRef = useRef(null);
+
+const [isPublic, setIsPublic] = useState(false);
+
+    const savedData = JSON.parse(localStorage.getItem('designData') || 'null');
+
+    const idDesign = designData?.idDesign || savedData?.idDesign;
+
+    const category = designData?.category || savedData?.category || 'notebook';
+
+    const localImage = designData?.localImage || savedData?.localImage;
+
+
+
+    const [mockups, setMockups] = useState([]);
+
+    const [selectedMockup, setSelectedMockup] = useState(null);
+
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [selectedColor, setSelectedColor] = useState('white');
-    const [logoUrl, setLogoUrl] = useState(localImage || '');
-    const [designState, setDesignState] = useState({ width: 120, height: 120, x: 140, y: 150 });
+
+    const [selectedSize, setSelectedSize] = useState('M');
 
     
-    const getProductImage = () => {
-        const mapping = { 'T-shirt': 'th1', 'sweatshirt': 'hd1', 'chaier': 'bk1', 'horloge': 'rg1', 'tapis souris': 'tp1', 'pochette': 'ph1' };
-        const baseName = mapping[category] || 'th1';
-        const colorSuffix =  `_${selectedColor}`;
-        const extension = (category === 'horloge') ? '.png' : '.jpg';
-        return `/img/${baseName}${colorSuffix}${extension}`;
-    };
-useEffect(() => {
-  if (!idDesign) {
-    navigate('/upload'); 
-  }
-}, [idDesign]);
-    
+
+    const [designState, setDesignState] = useState({ 
+
+        width: 150, 
+
+        height: 150, 
+
+        x: 100, 
+
+        y: 100,
+
+        selectedColor: '#ffffff'
+
+    });
+
+
+
     useEffect(() => {
-        if (!logoUrl && idDesign && token) {
-            axios.get(`http://127.0.0.1:8000/api/designs/${idDesign}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            .then(res => setLogoUrl(`http://127.0.0.1:8000/storage/logos/${res.data.nom_design}`))
-            .catch(err => console.error("Logo load error", err));
-        }
-    }, [idDesign, token, logoUrl]);
 
-   const handleSave = async () => {
-    const element = document.getElementById('capture-area');
-    if (!element) return;
+        if (category) {
+
+            axios.get(`http://127.0.0.1:8000/api/fetch-mockups/${category}`)
+
+                .then(res => {
+
+                    setMockups(res.data);
+
+                    if (res.data.length > 0) {
+
+                        setSelectedMockup(res.data[0]);
+
+                        try {
+
+                            const colors = JSON.parse(res.data[0].colors);
+
+                            setDesignState(prev => ({ ...prev, selectedColor: colors[0] }));
+
+                        } catch (e) {
+
+                            setDesignState(prev => ({ ...prev, selectedColor: '#ffffff' }));
+
+                        }
+
+                    }
+
+                });
+
+        }
+
+    }, [category]);
+
+
+
+    const mockupUrl = selectedMockup 
+
+        ? `http://127.0.0.1:8000/storage/${selectedMockup.nom_mockup}` 
+
+        : null;
+
+
+
+    const handleSave = async () => {
+
+    // تأكد أن كلشي موجود قبل ما تصيفط
+
+    if (!captureRef.current || !selectedMockup || !idDesign || !user?.id) {
+
+        alert("بيانات ناقصة: تأكد من تسجيل الدخول واختيار التصميم");
+
+        console.log({ idDesign, userId: user?.id, mockupId: selectedMockup?.id });
+
+        return;
+
+    }
+
+
 
     try {
-        
-        const canvas = await html2canvas(element, { 
-            useCORS: true,
-            scale: 2,           
-            backgroundColor: null,
-            logging: false,
-            width: element.offsetWidth,
-            height: element.offsetHeight,
-            onclone: (clonedDoc) => {
-                const clonedElement = clonedDoc.getElementById('capture-area');
-                clonedElement.style.transform = 'none'; 
-            }
+
+        const canvas = await html2canvas(captureRef.current, { 
+
+            useCORS: true, 
+
+            scale: 2, 
+
+            backgroundColor: null 
+
         });
 
-    
         const screenshot = canvas.toDataURL('image/jpeg', 0.8);
 
-        
-        const response = await axios.post('http://127.0.0.1:8000/api/save-design', {
-            id_design: idDesign,
-            title: title || 'Produit sans titre',
-            price: prices[category],
-            description: description || '',
-            category: category,
-            color: selectedColor,
-            id_utilisateur: user?.id || user?.id_utilisateur,
+
+
+        // هاد البيانات خاصها تطابق الـ Validation في Laravel
+
+        const payload = {
+
+            id_utilisateur: user.id,
+
+            id_design: idDesign, // تأكد أنه ماشي undefined
+
+            id_mockup: selectedMockup.id, // تأكد أن الموكاب عندو id
+
+            title: title || 'Produit Halla',
+
+            price: selectedMockup.prix_base,
+
+            size: selectedSize, 
+
+            color: designState.selectedColor,
+
             final_mockup: screenshot,
-            is_public: isPublic ? 1 : 0,
+
             x: Math.round(designState.x),
+
             y: Math.round(designState.y),
+
             width: Math.round(designState.width),
-            height: Math.round(designState.height)
-        }, {
+
+            height: Math.round(designState.height),
+            is_public: isPublic ? 1 : 0
+
+        };
+
+
+
+        await axios.post('http://127.0.0.1:8000/api/save-design', payload, {
+
             headers: { 'Authorization': `Bearer ${token}` }
+
         });
 
-        
+
+
         navigate('/panier');
+
     } catch (err) {
-    
-        console.error("Save error details:", err.response?.data || err.message);
-        alert("Erreur: " + (err.response?.data?.message || "Vérifiez les champs ou la base de données"));
+
+        // هنا غادي يبان ليك شنو هو الحقل اللي فيه المشكل بالضبط
+
+        if (err.response && err.response.status === 422) {
+
+            console.log("Validation Errors:", err.response.data.errors);
+
+            alert("خطأ في البيانات: " + JSON.stringify(err.response.data.errors));
+
+        } else {
+
+            alert("Erreur: " + err.message);
+
+        }
+
     }
+
 };
 
-    const prices = { 'T-shirt': 60, 'sweatshirt': 60, 'chaier': 40, 'horloge': 40, 'tapis souris': 30, 'pochette': 30 };
+
 
     return (
-        <div className="design-page-container">
-            <div className="mockup-section">
-                <div className="product-canvas" id="capture-area" style={{ position: 'relative', overflow: 'hidden' }}>
-                    <img src={getProductImage()} alt="Base" className="base-product-img" />
+
+        <div className="design-layout">
+
+            <div className="preview-container">
+
+            <div className="capture-box" ref={captureRef} style={{ position: 'relative', width: '450px', height: '450px', backgroundColor: '#fff' }}>
+
                     
+
+                    {/* ───── الطبقة 1: خلفية رمادية فاتحة (ديكور فقط) ───── */}
+<div 
+  className="layer-bg" 
+  style={{ 
+    backgroundColor: designState.selectedColor, 
+    width: '100%', 
+    height: '100%' 
+  }} 
+/>
+
+
+
+                    {/* الطبقة 2: تطبيق اللون باستخدام القناع */}
+
+{mockupUrl && (
+    <div 
+        className="layer-color"
+        style={{
+            backgroundColor: designState.selectedColor,
+            WebkitMaskImage: `url(${mockupUrl})`,
+            maskImage: `url(${mockupUrl})`,
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat'
+        }}
+        // هاد السطر ضروري لـ html2canvas
+        data-html2canvas-ignore="false" 
+    />
+)}
+
+
+
+{/* الطبقة 3: تفاصيل الموكاب (الظلال) */}
+
+{mockupUrl && (
+
+    <img 
+
+        src={mockupUrl}
+
+        alt="Product Base" 
+
+        className="layer-mockup"
+
+        // نصيحة: إذا كانت الصورة ملونة أصلاً، يمكنك استخدام filter لجعلها رمادية
+
+        // style={{ filter: 'grayscale(100%) brightness(1.2)' }} 
+
+    />
+
+)}
+
+                    {/* ───── الطبقة 4: لوغو المستخدم ───── */}
+
                     <Rnd
-                        size={{ width: designState.width, height: designState.height }}
-                        position={{ x: designState.x, y: designState.y }}
-                        onDragStop={(e, d) => setDesignState({ ...designState, x: d.x, y: d.y })}
-                        onResizeStop={(e, dir, ref, delta, pos) => {
-                            setDesignState({
-                                width: parseInt(ref.style.width),
-                                height: parseInt(ref.style.height),
-                                ...pos,
-                            });
-                        }}
+
                         bounds="parent"
+
+                        size={{ width: designState.width, height: designState.height }}
+
+                        position={{ x: designState.x, y: designState.y }}
+
+                        onDragStop={(e, d) => 
+
+                            setDesignState(prev => ({ ...prev, x: d.x, y: d.y }))
+
+                        }
+
+                        onResizeStop={(e, dir, ref, delta, pos) => {
+
+                            setDesignState(prev => ({
+
+                                ...prev,
+
+                                width: parseInt(ref.style.width),
+
+                                height: parseInt(ref.style.height),
+
+                                ...pos
+
+                            }));
+
+                        }}
+
                         lockAspectRatio={true}
+
+                        style={{ zIndex: 3 }}
+
                     >
-                        <div className="logo-wrapper" style={{width: '100%', height: '100%',display: 'flex',alignItems: 'center',justifyContent: 'center',overflow: 'hidden'}}>
-                           
+
                         <img 
-                            src={logoUrl || "/img/placeholder_logo.png"} 
-                            crossOrigin="anonymous"
+
+                            src={localImage} 
+
                             alt="Logo" 
-                            style={{ width: '100%', height: '100%',display: 'block'}} />
-                        </div>
+
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+
+                        />
+
                     </Rnd>
+
                 </div>
+
             </div>
 
-            <div className="params-section">
-                <h3>● Paramètres</h3>
-                <div className="input-group">
+
+
+            {/* ───── Panel ───── */}
+
+            <div className="controls-panel">
+
+                <h2>● Paramètres</h2>
+
+                
+
+                <div className="control-group">
+
                     <label>Taille du Logo: {designState.width}px</label>
-                    <input type="range" min="50" max="300"  value={designState.width}  onChange={(e) => {const newSize = parseInt(e.target.value);setDesignState({ ...designState, width: newSize, height: newSize // Hna fin kishwat ila kanti baghih dima square
-});
-    }} 
-/>
+
+                    <input 
+
+                        type="range" min="50" max="300" 
+
+                        value={designState.width} 
+
+                        onChange={(e) => setDesignState(prev => ({ 
+
+                            ...prev, 
+
+                            width: parseInt(e.target.value), 
+
+                            height: parseInt(e.target.value) 
+
+                        }))}
+
+                    />
+
                 </div>
-                <div className="input-group">
-                    <label>Titre de produit</label>
-                    <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                </div>
-                <div className="input-group">
-                    <strong>Prix : {prices[category]} DH</strong>
-                </div>
-                <div className="color-selector">
-                    <label>Couleur :</label>
-                    <div className="colors">
-                        {['white', 'black', 'blue', 'red', 'pink', 'olive'].map(color => (
-                            <span key={color} className={`color-dot ${color} ${selectedColor === color ? 'active' : ''}`}
-                                onClick={() => setSelectedColor(color)} style={{ backgroundColor: color }}></span>
-                        ))}
+
+
+
+                <div className="control-group">
+
+                    <label>Couleurs disponibles :</label>
+
+                    <div className="color-grid" style={{ marginTop: '10px' }}>
+
+                        {selectedMockup && (() => {
+
+                            try {
+
+                                const availableColors = typeof selectedMockup.colors === 'string' 
+
+                                    ? JSON.parse(selectedMockup.colors) 
+
+                                    : selectedMockup.colors;
+
+
+
+                                return availableColors.map((color, index) => (
+
+                                    <div 
+
+                                        key={index}
+
+                                        onClick={() => setDesignState(prev => ({ ...prev, selectedColor: color }))}
+
+                                        className={`color-circle ${designState.selectedColor === color ? 'active' : ''}`}
+
+                                        style={{ backgroundColor: color }}
+
+                                    />
+
+                                ));
+
+                            } catch (e) {
+
+                                return <span>Format de couleur non valide</span>;
+
+                            }
+
+                        })()}
+
                     </div>
+
                 </div>
-                <div className="input-group">
-                    <label>Description :</label>
-                    <textarea value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+
+
+
+                <div className="control-group">
+
+                    <label>Taille</label>
+
+                    <div className="size-options">
+
+                        {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map(size => (
+
+                            <button
+
+                                key={size}
+
+                                onClick={() => setSelectedSize(size)}
+
+                                className={`size-btn ${selectedSize === size ? 'active' : ''}`}
+
+                            >
+
+                                {size}
+
+                            </button>
+
+                        ))}
+
+                    </div>
+
                 </div>
-                <div className="input-group checkbox-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '15px 0' }}>
+
+
+
+                <div className="control-group">
+
+                    <label>Titre</label>
+
+                    <input 
+
+                        type="text" 
+
+                        value={title} 
+
+                        onChange={(e) => setTitle(e.target.value)} 
+
+                        className="styled-input" 
+
+                        placeholder="Nom du produit..."
+
+                    />
+
+                </div>
+
+
+
+                <div className="price-tag">
+
+                    Prix: <span>{selectedMockup?.prix_base} DH</span>
+
+                </div>
+<div className="control-group" style={{ marginTop: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
     <input 
         type="checkbox" 
         id="is_public" 
@@ -171,14 +468,26 @@ useEffect(() => {
         onChange={(e) => setIsPublic(e.target.checked)} 
         style={{ width: '20px', height: '20px', cursor: 'pointer' }}
     />
-    <label htmlFor="is_public" style={{ cursor: 'pointer', fontWeight: 'bold' }}>
-        Rendre ce produit public (Visible par tous)
+    <label htmlFor="is_public" style={{ fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' }}>
+        Rendre ce design public (Afficher dans la boutique)
     </label>
 </div>
-                <button className="btn-send" onClick={handleSave}>Envoyer</button>
+
+
+                <button className="btn-envoyer" onClick={handleSave}>
+
+                    ENVOYER AU PANIER
+
+                </button>
+
             </div>
+
         </div>
+
     );
+
 };
+
+
 
 export default Design;

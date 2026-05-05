@@ -1,127 +1,191 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Produit;
-use App\Models\Image;
+use App\Models\Design;
+use App\Models\Mockup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function saveDesign(Request $request) {
-    $imageData = $request->final_mockup;
-    $name = time().'_mockup.png';
-    \Storage::disk('public')->put('mockups/'.$name, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData)));
-
-    
-    $produit = Produit::create([
-        'nom_produit' => $request->title,
-        'final_mockup' => $name, 
-        // ...
-    ]);
-
-    
-    Image::create([
-        'id_product' => $produit->id,
-        'id_design' => $request->id_design,
-        'x' => $request->x,
-        'y' => $request->y,
-        'width' => $request->width,
-        'height' => $request->height,
-        'nom_image' => $designName 
-    ]);
-}
+    /**
+     * =========================================================
+     * 🎨 SAVE FINAL USER DESIGN (EXPORT FROM CANVAS)
+     * =========================================================
+     * - Validate incoming request
+     * - Decode Base64 image
+     * - Save image to storage
+     * - Create product record in DB
+     */
     public function saveFullDesign(Request $request)
     {
-        try {  
-            $design = \App\Models\Design::find($request->id_design);
-            if (!$design) return response()->json(['error' => 'Design non trouvé'], 404);
-            $mockupName = null;
-            if ($request->has('final_mockup') && !empty($request->final_mockup)) {
-                $imageData = $request->final_mockup;
-                if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
-                    $imageData = substr($imageData, strpos($imageData, ',') + 1);
-                    $extension = strtolower($type[1]); 
-                    $imageData = base64_decode($imageData);
-                    
-                    $mockupName = 'mockup_' . time() . '.' . $extension;
-                    \Storage::disk('public')->put('mockups/' . $mockupName, $imageData);
-                }
+        // 🔍 Validation des données
+        $request->validate([
+            'id_utilisateur' => 'required|exists:utilisateurs,id',
+            'id_design'      => 'required|exists:design,id',
+            'id_mockup'      => 'required|exists:mockup,id',
+            'final_mockup'   => 'required', // Base64 image
+            'price'          => 'required|numeric',
+            'x'              => 'required',
+            'y'              => 'required',
+            'width'          => 'required',
+            'height'         => 'required',
+            'is_public'     => 'required|in:0,1',
+        ]);
+
+        try {
+
+            // 🖼️ 1. Get Base64 image
+            $imageData = $request->final_mockup;
+
+            // 📁 2. Generate filename
+            $fileName = 'halla_design_' . time() . '.jpg';
+
+            // 📂 3. Ensure directory exists
+            $directory = public_path('storage/designs/');
+
+            if (!File::isDirectory($directory)) {
+                File::makeDirectory($directory, 0777, true, true);
             }
+
+            // 🧹 4. Clean Base64 string
+            $image = preg_replace('#^data:image/\w+;base64,#i', '', $imageData);
+            $image = str_replace(' ', '+', $image);
+
+            // 💾 5. Save image to disk
+            File::put($directory . $fileName, base64_decode($image));
+
+            // 🧾 6. Create product in database
             $produit = Produit::create([
-                'nom_produit'         => $request->title ?? 'Produit Personnalisé',
-                'categorie_produit'   => $request->category,
-                'description_produit' => $request->description,
-                'prix'                => $request->price, 
-                'id_utilisateur'      => $request->id_utilisateur, 
-                'is_public'           => $request->is_public ?? 0,
-                'color'               => $request->color,
-                'final_mockup'        => $mockupName, 
-            ]);
-            Image::create([
-                'nom_image'  => $design->nom_design, 
-                'id_design'  => $request->id_design,
-                'id_product' => $produit->id,
-                'x'          => (int)$request->x,     
-                'y'          => (int)$request->y,      
-                'width'      => (int)$request->width,  
-                'height'     => (int)$request->height  
+                'nom_produit'    => $request->title ?? 'Produit Halla',
+                'id_utilisateur' => $request->id_utilisateur,
+                'id_design'      => $request->id_design,
+                'id_mockup'      => $request->id_mockup,
+                'x'              => $request->x,
+                'y'              => $request->y,
+                'width'          => $request->width,
+                'height'         => $request->height,
+                'taille'         => $request->size,
+                'color'          => $request->color,
+                'prix'           => $request->price,
+                'final_mockup'   => '/storage/designs/' . $fileName,
+                'is_public'      => $request->is_public,
             ]);
 
-            return response()->json(['status' => 'success', 'message' => 'Produit enregistré !'], 201);
+            // ✅ Success response
+            return response()->json([
+                'message' => 'Design enregistré avec succès !',
+                'data'    => $produit
+            ], 201);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            // ❌ Error handling
+            return response()->json([
+                'error' => 'Erreur serveur: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    public function getUserCart(Request $request) {
-    
-        $products = Produit::with('images')
-                    ->where('id_utilisateur', $request->user()->id)
-                    ->orderBy('id', 'DESC')
-                    ->get();
+    /**
+     * =========================================================
+     * 🛒 GET USER CART PRODUCTS
+     * =========================================================
+     * - Return products of authenticated user
+     */
+    public function getUserCart(Request $request)
+    {
+        $products = Produit::where('id_utilisateur', $request->user()->id)
+            ->orderBy('id', 'DESC')
+            ->get();
 
         return response()->json($products);
     }
 
-    public function getByCategory(Request $request, $category)
-    {
-        try {
-            $limit = $request->query('limit', 4);
-            $products = Produit::with('images')
-                ->where('categorie_produit', $category)
-                ->orderBy('id', 'DESC')
-                ->limit($limit)
-                ->get();
-
-            return response()->json($products);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
+    /**
+     * =========================================================
+     * 🛍️ GET PUBLIC PRODUCTS (STORE)
+     * =========================================================
+     * - Filter by category if provided
+     */
     public function index(Request $request)
     {
-        $query = Produit::with('images'); 
+        $query = Produit::with(['mockup', 'design'])
+            ->where('is_public', true);
 
-        if ($request->has('categorie')) {
-            $query->where('categorie_produit', $request->categorie);
-        }
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nom_produit', 'LIKE', "%{$search}%")
-                  ->orWhere('description_produit', 'LIKE', "%{$search}%");
+        // 📦 Filter by category
+        if ($request->has('category')) {
+            $category = $request->category;
+
+            $query->whereHas('mockup', function ($q) use ($category) {
+                $q->where('categorie_mockup', $category);
             });
         }
-        return response()->json($query->orderBy('id', 'desc')->get());
+
+        return response()->json(
+            $query->latest()->get()
+        );
     }
 
+    /**
+     * =========================================================
+     * 🔎 GET SINGLE PRODUCT DETAILS
+     * =========================================================
+     */
     public function show($id)
     {
-        $produit = Produit::with('images')->find($id);
+        $produit = Produit::with(['design', 'mockup'])->find($id);
+
         if (!$produit) {
-            return response()->json(['message' => 'Not Found'], 404);
+            return response()->json([
+                'message' => 'Produit non trouvé'
+            ], 404);
         }
+
         return response()->json($produit);
+    }
+
+    /**
+     * =========================================================
+     * 🗑️ DELETE PRODUCT (AND IMAGE FILE)
+     * =========================================================
+     */
+    public function destroy($id)
+    {
+        try {
+
+            $produit = Produit::find($id);
+
+            if (!$produit) {
+                return response()->json([
+                    'message' => 'Produit non trouvé'
+                ], 404);
+            }
+
+            // 🧹 Delete image file from storage
+            if ($produit->final_mockup) {
+                $imagePath = public_path($produit->final_mockup);
+
+                if (File::exists($imagePath)) {
+                    File::delete($imagePath);
+                }
+            }
+
+            // 🗑️ Delete DB record
+            $produit->delete();
+
+            return response()->json([
+                'message' => 'Produit supprimé avec succès'
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => 'Erreur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

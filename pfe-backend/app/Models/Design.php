@@ -7,17 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Design extends Model 
 {
-    protected $table = 'design';
-    protected $primaryKey = 'id';
-    
- protected $fillable = [
-    'nom_design',
-    'date_upload',
-    'id_utilisateur'
-];
+protected $table = 'design';
+protected $fillable = ['nom_design', 'id_utilisateur'];
 
-    public function utilisateur(): BelongsTo
-    {
+public function utilisateur() {
         return $this->belongsTo(Utilisateur::class, 'id_utilisateur');
+    }
+    
+    public function produits() {
+        return $this->hasMany(Produit::class, 'id_design');
     }
 }

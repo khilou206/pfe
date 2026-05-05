@@ -89,7 +89,7 @@ const Produits = () => {
                             <div className="pp-product-card" key={pro.id}>
                                 <div className="pp-image-holder">
                                     <img 
-                                        src={`http://127.0.0.1:8000/storage/mockups/${pro.final_mockup}`} 
+                                        src={`http://127.0.0.1:8000${pro.final_mockup}`} 
                                         alt={pro.nom_produit} 
                                     />
                                 </div>
