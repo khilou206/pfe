@@ -8,18 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    /**
-     * =========================================================
-     * 🧑‍💻 GET USER ORDERS (HISTORY OF LOGGED USER)
-     * =========================================================
-    
-     */
     public function getUserOrders()
     {
-        // 🔐 Get current authenticated user ID
         $userId = Auth::id();
-
-        // 📦 Fetch orders with products relation
         $orders = Commande::with([
             'produits' => function ($query) {
                 $query->select(

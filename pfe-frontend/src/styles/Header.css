@@ -1,10 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-
-:root {
-  --logo-gradient: linear-gradient(90deg, #4ade80, #facc15, #c084fc);
-  --glass-bg: rgba(5, 5, 5, 0.85);
-}
-
 .creative-header {
   font-family: 'Plus Jakarta Sans', sans-serif;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);

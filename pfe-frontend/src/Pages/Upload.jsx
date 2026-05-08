@@ -12,7 +12,6 @@ const Upload = () => {
   const navigate = useNavigate();
   const { setDesignData } = useContext(AuthContext);
 
-  // 1. جلب الكاتيغوريز المتاحة من السيرفر بمجرد فتح الصفحة
   useEffect(() => {
     const fetchCategories = async () => {
       try {

@@ -60,10 +60,27 @@ const Produits = () => {
                 <div className="pp-nav-wrapper">
                     {categoriesList.map((cat) => (
                         <button 
-                            key={cat.name} 
+                            key={cat.name}
+
                             className={`pp-nav-item ${category === cat.name ? 'pp-active' : ''}`}
-                            style={{ '--pp-accent': cat.color }}
-                            onClick={() => setSearchParams({ categorie_produit: cat.name })}
+
+                            style={{
+                                '--pp-accent': cat.color,
+                                background:
+                                    category === cat.name
+                                        ? cat.color
+                                        : '',
+                                color:
+                                    category === cat.name
+                                        ? '#fff'
+                                        : ''
+                            }}
+
+                            onClick={() =>
+                                setSearchParams({
+                                    categorie_produit: cat.name
+                                })
+                            }
                         >
                             {cat.name === 'all' ? 'TOUS' : cat.name}
                         </button>
@@ -72,11 +89,26 @@ const Produits = () => {
             </nav>
 
             <main className="pp-main-content" >
-                <header className="pp-header-section" style={{ backgroundColor: activeCategory?.color || '#111' }}>
-                    <h1 className="pp-page-title" style={{ color: isDarkColor(activeCategory?.color) ? '#fff' : '#111'}}>
-                        {query ? `Résultats: "${query}"` : 'Nos Produits'}
-                    </h1>
-                </header>
+                <header 
+    className="pp-header-section"
+    style={{
+        '--headerColor': activeCategory?.color || '#111'
+    }}
+>
+    <h1 
+        className="pp-page-title"
+        style={{
+            color: isDarkColor(activeCategory?.color)
+                ? '#fff'
+                : '#111'
+        }}>
+        {query
+            ? `Résultats: "${query}"`
+            : category === 'all'
+            ? 'Nos Produits'
+            : `Nos ${category}`}
+    </h1>
+</header>
 
                 <div className="pp-products-grid">
                     {loading ? (

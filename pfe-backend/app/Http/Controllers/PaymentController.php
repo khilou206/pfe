@@ -95,12 +95,9 @@ class PaymentController extends Controller
                     'line_items'           => $lineItems,
                     'mode'                 => 'payment',
 
-                    // 🔁 Redirect URLs
-       // إذا كان React خدام في منفذ 3000
-'success_url' => 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
-                    'cancel_url'  => url('/cart'),
+                    'success_url' => 'http://localhost:5173/payment/success?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url'  => 'http://localhost:5173/panier',
 
-                    // 🧠 Metadata for tracking order
                     'metadata' => [
                         'commande_id' => $commande->id
                     ]

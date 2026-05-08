@@ -12,12 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // جمعي كاع الـ alias هنا
         $middleware->alias([
             'checkAdmin' => \App\Http\Middleware\CheckAdmin::class,
         ]);
-
-        // إيلا كنتي خدامة بـ Sanctum و React (SPA)
         $middleware->statefulApi(); 
     })
     ->withMiddleware(function (Middleware $middleware) {

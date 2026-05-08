@@ -22,38 +22,26 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* الروابط العامة (بجوج يقدروا يشوفوهم) */}
           <Route path="/login" element={<Auth />} />
- <Route path="/product-design" element={<Design />} />
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/propos" element={<About />} />
-              <Route path="/upload" element={<Upload />} />
-                <Route path="/Produits" element={<Produits />} />
-                   <Route path="/produit/:id" element={<ProductDetails />} />
-                        <Route path="/panier" element={<Panier />} />
-                            <Route path="/checkout" element={<Checkout />} />
-            
-            {/* --- مسارات خاصة فقط بالمستخدم العادي (Utilisateur) --- */}
-            <Route element={<UserRoute />}>
-             
-           
-            
-                <Route path="/profile" element={<Profile />} />
-               
-              
-              
-            </Route>
-
-            {/* --- مسارات خاصة فقط بالـ Admin --- */}
-            <Route element={<AdminRoute />}>
-                <Route path="/AdminDashboard" element={<AdminDashboard />} />
-                {/* تقدر تزيد هنا أي صفحة خاصة بالـ admin بحال /admin/orders */}
-            </Route>
-          </Route>
-
           <Route path="/payment/success" element={<SuccessPage />} />
           <Route path="/payment/cancel" element={<CancelPage />} />
+          <Route path="/product-design" element={<Design />} />
+//==============================================================================
+          <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/propos" element={<About />} />
+              <Route path="/upload" element={<Upload />} />
+              <Route path="/Produits" element={<Produits />} />
+              <Route path="/produit/:id" element={<ProductDetails />} />
+              <Route path="/panier" element={<Panier />} />  
+              <Route path="/checkout" element={<Checkout />} />
+                <Route element={<UserRoute />}>
+                  <Route path="/profile" element={<Profile />} />  
+                </Route>
+                <Route element={<AdminRoute />}>
+                    <Route path="/AdminDashboard" element={<AdminDashboard />} />
+                </Route>
+            </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

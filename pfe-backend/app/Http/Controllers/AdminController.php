@@ -25,9 +25,6 @@ public function getDashboardStats() {
 
         // 2. عدد الزبناء باستعمال الموديل Utilisateur
         $totalClients = Utilisateur::where('role', 'utilisateur')->count();
-
-        // 3. المنتجات النشطة باستعمال الموديل Produit
-        // ملاحظة: تأكد أن جدول produits فيه column سميتها is_active، وإلا حيد الـ where
         $activeProducts = Produit::count(); 
 
         // 4. الطلبيات حسب الأيام (7 أيام الأخيرة)

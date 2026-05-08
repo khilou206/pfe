@@ -9,11 +9,7 @@ const Checkout = () => {
     const { token } = useContext(AuthContext);
     const [formData, setFormData] = useState({ city: '', zipcode: '', address: '' });
     const [loading, setLoading] = useState(false);
-
-    // التأكد من أن الـ items موجودة
     const items = location.state?.items || [];
-
-    // حساب المجموع بطريقة آمنة
     const totalPrice = items.reduce((sum, item) => {
         const price = parseFloat(item.price) || 0;
         return sum + price;
@@ -21,7 +17,6 @@ const Checkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (items.length === 0) {
             alert("السلة فارغة. يرجى إضافة منتجات أولاً.");
             return;

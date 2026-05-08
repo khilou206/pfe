@@ -47,7 +47,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 5. Produits (المنتج النهائي - هو اللي فيه كلشي)
         Schema::create('produits', function (Blueprint $table) {
             $table->id();
             $table->string('nom_produit', 150)->nullable();
@@ -55,23 +54,24 @@ return new class extends Migration
             $table->foreignId('id_design')->constrained('design')->onDelete('cascade');
             $table->foreignId('id_mockup')->constrained('mockup')->onDelete('cascade');
             
-            // إحداثيات اللوغو (باش الـ Admin يعرف القياسات)
             $table->integer('x')->nullable();
             $table->integer('y')->nullable();
             $table->integer('width')->nullable();
             $table->integer('height')->nullable();
-
-            // مواصفات القطعة
+            
             $table->string('taille')->nullable();
             $table->string('color')->nullable();
             $table->decimal('prix', 10, 2)->nullable();
-            $table->string('final_mockup')->nullable(); // صورة الـ Preview للـ Admin
+            $table->string('final_mockup')->nullable(); 
+            
+            // Columns l-jdad li zdna:
+            $table->string('categorie')->nullable(); 
+            $table->boolean('is_paid')->default(false);
             
             $table->boolean('is_public')->default(false);
             $table->timestamps();
         });
 
-        // 6. Commandes
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
             $table->string('reference_commande')->unique();

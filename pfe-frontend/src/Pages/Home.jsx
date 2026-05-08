@@ -64,9 +64,7 @@ const Home = () => {
         </div>
       </div>
     </section>
-    <section className='imgTa'>
-      <img src="imgs/about/cover.png" alt="" />
-    </section>
+    
     <section className="premium-features">
   <div className="bento-grid">
     {/* Card 1 - Blue */}
@@ -124,7 +122,9 @@ const Home = () => {
     </div>
   </div>
 </section>
-<AboutLight />
+<section className='imgTa'>
+      <img src="imgs/about/cover.png" alt="" />
+    </section>
     </>
 };
 

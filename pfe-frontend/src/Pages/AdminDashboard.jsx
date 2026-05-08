@@ -10,18 +10,13 @@ const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('bord');
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [fileColors, setFileColors] = useState({});
-
-    // ✅ من Code 2: State ديال Modal
     const [selectedProductDetails, setSelectedProductDetails] = useState(null);
-
     const handleFileChange = (e) => {
         setSelectedFiles(Array.from(e.target.files));
     };
-
     const handleColorChange = (index, value) => {
         setFileColors({ ...fileColors, [index]: value });
     };
-
     const availableColors = [
         { name: 'Noir', hex: '#000000' },
         { name: 'Blanc', hex: '#FFFFFF' },
@@ -30,9 +25,7 @@ const AdminDashboard = () => {
         { name: 'Bleu', hex: '#0000FF' },
         { name: 'Vert', hex: '#008000' },
     ];
-
     const [selectedPalette, setSelectedPalette] = useState([]);
-
     const toggleColor = (hex) => {
         if (selectedPalette.includes(hex)) {
             setSelectedPalette(selectedPalette.filter(c => c !== hex));
@@ -40,7 +33,6 @@ const AdminDashboard = () => {
             setSelectedPalette([...selectedPalette, hex]);
         }
     };
-
     const [stats, setStats] = useState({
         totalRevenue: 0,
         totalOrders: 0,
@@ -48,14 +40,11 @@ const AdminDashboard = () => {
         activeProducts: 0,
         ordersByDay: []
     });
-
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
-
     const token = localStorage.getItem('auth_token');
-
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -71,7 +60,6 @@ const AdminDashboard = () => {
             setLoading(false);
         }
     };
-
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
         if (!token || storedUser?.role !== 'administrateur') {
@@ -134,9 +122,7 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="profile-page admin-dashboard">
-
-            {/* ✅ من Code 2: Modal ديال تفاصيل المنتج */}
+        <div className="admin-dashboard">
             {selectedProductDetails && (
                 <div 
                     className="modal-overlay" 
@@ -202,7 +188,7 @@ const AdminDashboard = () => {
                          <img src="/imgs/login.png" style={{ width: '100px', height: '100px', borderRadius: '50%', border: '1.5px solid #facc15' }} alt="User" />
                 </div>
                 <div className="profile-names" style={{ marginLeft: '20px' }}>
-                    <h1 className="username" style={{ fontSize: '48px', margin: 0 }}>{user?.nom || 'Admin'}</h1>
+                    <h1 className="username" style={{ fontSize: '48px', margin: 0 , color:'black' }}>{user?.nom || 'Admin'}</h1>
                     <small className="page-title" style={{ fontSize: '18px', color: '#666' }}>Administrateur</small>
                 </div>
             </div>
