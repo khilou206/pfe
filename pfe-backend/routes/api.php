@@ -26,6 +26,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/products/category/{category}', [ProductController::class, 'getByCategory']);
+Route::get('/categories', [ProductController::class, 'getCategories']);
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/design/{id}', [UploadController::class, 'destroy']);
     Route::get('/fetch-mockups/{cat}', [UploadController::class, 'getMockupsByCat']); 
     Route::post('/products/save-design', [ProductController::class, 'saveFullDesign']);
+
   
     Route::post('/commandes', [CommandeController::class, 'store']); 
     Route::post('/payment', [PaymentController::class, 'checkout']);
