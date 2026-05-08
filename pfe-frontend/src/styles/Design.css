@@ -52,16 +52,6 @@
     mask-position: center;
 }
 
-.layer-mockup {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    object-fit: contain;
-    mix-blend-mode: multiply; /* Realistic shadowing over the color layer */
-    pointer-events: none;
-}
 
 .design-img {
     width: 100%;

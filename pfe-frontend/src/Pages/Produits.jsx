@@ -5,14 +5,17 @@ import '../styles/product.css';
 
 const Produits = () => {
     const [produits, setProduits] = useState([]);
-    const [categories, setCategories] = useState([]); // State jdid l categories
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
     
-    const category = searchParams.get('categorie_produit') || 'all';
+    // Params matching Laravel: $request->category
+    const category = searchParams.get('category') || 'all';
     const query = searchParams.get('search') || '';
 
-    // 1. Color Map: Hado homa l-alwan lli k-t-tbeddel bihom l-page
+    const API_BASE = "http://127.0.0.1:8000";
+
+    // Configuration dial l-alwan 3la 7sab smiyat l-categories
     const colorMap = {
         'all': '#1a1a1a',
         'T-SHIRT': '#ff3e6c',
@@ -21,10 +24,9 @@ const Produits = () => {
         'SWEATSHIRT': '#ffb703',
         'POCHETTE': '#06d6a0',
         'HORLOGE': '#ef476f',
-        'default': '#86868b' // Lon l-categories l-jdad
+        'default': '#86868b'
     };
 
-    // 2. Function bach t-akhod l-lon 3la 7sab s-miya
     const getCategoryColor = (catName) => {
         return colorMap[catName.toUpperCase()] || colorMap['default'];
     };
@@ -35,21 +37,23 @@ const Produits = () => {
         return color === '#111' || color === '#1a1a1a';
     };
 
-    // 3. Fetch Categories & Products
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const catRes = await axios.get('http://127.0.0.1:8000/api/available-categories');
+                // 1. Njibo l-categories mn l-API jdid (dynamic)
+                const catRes = await axios.get(`${API_BASE}/api/categories`);
                 setCategories(['all', ...catRes.data]);
-                let url = `http://127.0.0.1:8000/api/products?`;
-                if (category !== 'all') url += `categorie=${category}&`;
+
+                // 2. Fetch products b l-filtre dial category
+                let url = `${API_BASE}/api/products?`;
+                if (category !== 'all') url += `category=${category}&`; 
                 if (query) url += `search=${query}`;
                 
                 const prodRes = await axios.get(url);
                 setProduits(prodRes.data);
             } catch (err) {
-                console.error("Erreur fetching data", err);
+                console.error("Erreur fetching data:", err);
             }
             setLoading(false);
         };
@@ -61,18 +65,17 @@ const Produits = () => {
     const handleAddToCart = (e, product) => {
         e.preventDefault();
         e.stopPropagation();
-        alert(`Produit ajouté: ${product.nom_produit}`);
+        alert(`Ajouté au panier: ${product.nom_produit}`);
     };
 
     return (
         <div className="pp-page-container">
-            {/* --- Category Navigation Dynamique --- */}
+            {/* --- Navigation Dynamique --- */}
             <nav className="pp-category-nav">
                 <div className="pp-nav-wrapper">
                     {categories.map((catName) => {
                         const catColor = getCategoryColor(catName);
                         const isActive = category === catName;
-
                         return (
                             <button 
                                 key={catName}
@@ -82,7 +85,7 @@ const Produits = () => {
                                     background: isActive ? catColor : '',
                                     color: isActive ? '#fff' : ''
                                 }}
-                                onClick={() => setSearchParams({ categorie_produit: catName })}
+                                onClick={() => setSearchParams({ category: catName })}
                             >
                                 {catName === 'all' ? 'TOUS' : catName}
                             </button>
@@ -92,7 +95,6 @@ const Produits = () => {
             </nav>
 
             <main className="pp-main-content">
-                {/* --- Header li kiy-beddel l-lon --- */}
                 <header 
                     className="pp-header-section"
                     style={{ '--headerColor': activeCategoryColor }}
@@ -109,16 +111,22 @@ const Produits = () => {
                     {loading ? (
                         <div className="pp-loader-box">
                             <div className="pp-spinner"></div>
-                            <p>Chargement...</p>
+                            <p>Chargement en cours...</p>
                         </div>
                     ) : (
                         produits.map((pro) => (
                             <div className="pp-product-card" key={pro.id}>
                                 <div className="pp-image-holder">
-                                    <img src={`http://127.0.0.1:8000${pro.final_mockup}`} alt={pro.nom_produit} />
+                                    <img 
+                                        src={`${API_BASE}${pro.final_mockup}`} 
+                                        alt={pro.nom_produit} 
+                                    />
                                 </div>
                                 <div className="pp-info-holder">
-                                    <span className="pp-tag">{pro.categorie_produit}</span>
+                                    {/* Jib smiya mn relation mockup hit f produit makaynach */}
+                                    <span className="pp-tag">
+                                        {pro.mockup?.categorie_mockup || 'Produit'}
+                                    </span>
                                     <h3 className="pp-name">{pro.nom_produit}</h3>
                                     <div className="pp-footer">
                                         <span className="pp-price">{pro.prix} MAD</span>
@@ -135,7 +143,8 @@ const Produits = () => {
 
                 {!loading && produits.length === 0 && (
                     <div className="pp-empty">
-                        <p>Aucun produit trouvé.</p>
+                        <p>Désolé, aucun produit trouvé.</p>
+                        <Link to="/editor" className="pp-create-link">Créer mon premier design</Link>
                     </div>
                 )}
             </main>
