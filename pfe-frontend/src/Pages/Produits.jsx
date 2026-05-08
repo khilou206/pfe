@@ -5,125 +5,117 @@ import '../styles/product.css';
 
 const Produits = () => {
     const [produits, setProduits] = useState([]);
+    const [categories, setCategories] = useState([]); // State jdid l categories
     const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
     
     const category = searchParams.get('categorie_produit') || 'all';
     const query = searchParams.get('search') || '';
 
-    // Palette dyal l-alwan l-vibrant dyal l-matba3a
-    const categoriesList = [
-        { name: 'all', color: '#1a1a1a' },
-        { name: 'T-SHIRT', color: '#ff3e6c' },
-        { name: 'CHAIER', color: '#9381ff' },
-        { name: 'TAPIS DE SOURIS', color: '#00d1ff' },
-        { name: 'SWEATSHIRT', color: '#ffb703' },
-        { name: 'POCHETTE', color: '#06d6a0' },
-        { name: 'HORLOGE', color: '#ef476f' }
-    ];
-    const activeCategory = categoriesList.find(
-        (cat) => cat.name === category
-    );
+    // 1. Color Map: Hado homa l-alwan lli k-t-tbeddel bihom l-page
+    const colorMap = {
+        'all': '#1a1a1a',
+        'T-SHIRT': '#ff3e6c',
+        'CHAIER': '#9381ff',
+        'TAPIS DE SOURIS': '#00d1ff',
+        'SWEATSHIRT': '#ffb703',
+        'POCHETTE': '#06d6a0',
+        'HORLOGE': '#ef476f',
+        'default': '#86868b' // Lon l-categories l-jdad
+    };
+
+    // 2. Function bach t-akhod l-lon 3la 7sab s-miya
+    const getCategoryColor = (catName) => {
+        return colorMap[catName.toUpperCase()] || colorMap['default'];
+    };
+
+    const activeCategoryColor = getCategoryColor(category);
+
     const isDarkColor = (color) => {
         return color === '#111' || color === '#1a1a1a';
     };
 
+    // 3. Fetch Categories & Products
     useEffect(() => {
-        const fetchProduits = async () => {
+        const fetchData = async () => {
             setLoading(true);
             try {
+                const catRes = await axios.get('http://127.0.0.1:8000/api/available-categories');
+                setCategories(['all', ...catRes.data]);
                 let url = `http://127.0.0.1:8000/api/products?`;
                 if (category !== 'all') url += `categorie=${category}&`;
                 if (query) url += `search=${query}`;
-                const res = await axios.get(url);
-                setProduits(res.data);
+                
+                const prodRes = await axios.get(url);
+                setProduits(prodRes.data);
             } catch (err) {
-                console.error("Erreur fetching products", err);
+                console.error("Erreur fetching data", err);
             }
             setLoading(false);
         };
-        fetchProduits();
+
+        fetchData();
         window.scrollTo(0, 0);
     }, [category, query]);
 
     const handleAddToCart = (e, product) => {
         e.preventDefault();
         e.stopPropagation();
-        // Hna zid l-logic dyal l-panier dyalk (Context aw Redux)
-       alert(`Produit ajouté au: ${product.nom_produit}`);
+        alert(`Produit ajouté: ${product.nom_produit}`);
     };
 
     return (
         <div className="pp-page-container">
-            {/* --- Category Navigation (Under Main Header) --- */}
+            {/* --- Category Navigation Dynamique --- */}
             <nav className="pp-category-nav">
                 <div className="pp-nav-wrapper">
-                    {categoriesList.map((cat) => (
-                        <button 
-                            key={cat.name}
+                    {categories.map((catName) => {
+                        const catColor = getCategoryColor(catName);
+                        const isActive = category === catName;
 
-                            className={`pp-nav-item ${category === cat.name ? 'pp-active' : ''}`}
-
-                            style={{
-                                '--pp-accent': cat.color,
-                                background:
-                                    category === cat.name
-                                        ? cat.color
-                                        : '',
-                                color:
-                                    category === cat.name
-                                        ? '#fff'
-                                        : ''
-                            }}
-
-                            onClick={() =>
-                                setSearchParams({
-                                    categorie_produit: cat.name
-                                })
-                            }
-                        >
-                            {cat.name === 'all' ? 'TOUS' : cat.name}
-                        </button>
-                    ))}
+                        return (
+                            <button 
+                                key={catName}
+                                className={`pp-nav-item ${isActive ? 'pp-active' : ''}`}
+                                style={{
+                                    '--pp-accent': catColor,
+                                    background: isActive ? catColor : '',
+                                    color: isActive ? '#fff' : ''
+                                }}
+                                onClick={() => setSearchParams({ categorie_produit: catName })}
+                            >
+                                {catName === 'all' ? 'TOUS' : catName}
+                            </button>
+                        );
+                    })}
                 </div>
             </nav>
 
-            <main className="pp-main-content" >
+            <main className="pp-main-content">
+                {/* --- Header li kiy-beddel l-lon --- */}
                 <header 
-    className="pp-header-section"
-    style={{
-        '--headerColor': activeCategory?.color || '#111'
-    }}
->
-    <h1 
-        className="pp-page-title"
-        style={{
-            color: isDarkColor(activeCategory?.color)
-                ? '#fff'
-                : '#111'
-        }}>
-        {query
-            ? `Résultats: "${query}"`
-            : category === 'all'
-            ? 'Nos Produits'
-            : `Nos ${category}`}
-    </h1>
-</header>
+                    className="pp-header-section"
+                    style={{ '--headerColor': activeCategoryColor }}
+                >
+                    <h1 
+                        className="pp-page-title"
+                        style={{ color: isDarkColor(activeCategoryColor) ? '#fff' : '#111' }}
+                    >
+                        {query ? `Résultats: "${query}"` : category === 'all' ? 'Nos Produits' : `Nos ${category}`}
+                    </h1>
+                </header>
 
                 <div className="pp-products-grid">
                     {loading ? (
                         <div className="pp-loader-box">
                             <div className="pp-spinner"></div>
-                            <p>Chargement des produits...</p>
+                            <p>Chargement...</p>
                         </div>
                     ) : (
                         produits.map((pro) => (
                             <div className="pp-product-card" key={pro.id}>
                                 <div className="pp-image-holder">
-                                    <img 
-                                        src={`http://127.0.0.1:8000${pro.final_mockup}`} 
-                                        alt={pro.nom_produit} 
-                                    />
+                                    <img src={`http://127.0.0.1:8000${pro.final_mockup}`} alt={pro.nom_produit} />
                                 </div>
                                 <div className="pp-info-holder">
                                     <span className="pp-tag">{pro.categorie_produit}</span>
@@ -131,9 +123,7 @@ const Produits = () => {
                                     <div className="pp-footer">
                                         <span className="pp-price">{pro.prix} MAD</span>
                                         <div className="pp-actions">
-                                            <Link to={`/produit/${pro.id}`} className="pp-details-link">
-                                                Détails
-                                            </Link>
+                                            <Link to={`/produit/${pro.id}`} className="pp-details-link">Détails</Link>
                                             <button className="pp-add-cart-btn" onClick={(e) => handleAddToCart(e, pro)}> + Panier </button>
                                         </div>
                                     </div>
@@ -145,7 +135,7 @@ const Produits = () => {
 
                 {!loading && produits.length === 0 && (
                     <div className="pp-empty">
-                        <p>Aucun produit trouvé pour cette sélection.</p>
+                        <p>Aucun produit trouvé.</p>
                     </div>
                 )}
             </main>
