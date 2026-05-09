@@ -49,8 +49,9 @@ const Design = () => {
         }
     }, [category]);
     const mockupUrl = selectedMockup 
-        ? `http://127.0.0.1:8000/storage/${selectedMockup.nom_mockup}` 
+        ? `http://127.0.0.1:8000/storage/${selectedMockup.nom_mockup}`
         : null;
+
     const handleSave = async () => {
     if (!captureRef.current || !selectedMockup || !idDesign || !user?.id) {
         alert("بيانات ناقصة: تأكد من تسجيل الدخول واختيار التصميم");
@@ -122,7 +123,7 @@ const Design = () => {
 )}
 {mockupUrl && (
     <img 
-        src={mockupUrl}
+        src={`http://127.0.0.1:8000/api/proxy-image?url=${selectedMockup.nom_mockup}`}
         alt="Product Base" 
         className="layer-mockup" style={{  zIndex:'10', }} />
 
@@ -211,6 +212,7 @@ const Design = () => {
                         onChange={(e) => setTitle(e.target.value)} 
                         className="styled-input" 
                         placeholder="Nom du produit..."
+
                     />
                 </div>
                 <div className="price-tag">

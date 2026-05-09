@@ -1,20 +1,29 @@
 <?php
 
-// config/cors.php
 return [
-'paths' => ['api/*', 'storage/*', 'sanctum/csrf-cookie'],
 
-'allowed_methods' => ['*'], 
 
-'allowed_origins' => ['http://localhost:5173'], 
+    'paths' => [
+        'api/*',
+        'storage/*',
+        '*'
+    ],
 
-'allowed_origins_patterns' => [],
+    'allowed_methods' => ['*'],
 
-'allowed_headers' => ['*'], 
 
-'exposed_headers' => [],
+    'allowed_origins' => [
+        'http://localhost:5173'
+    ],
 
-'max_age' => 0,
+    'allowed_origins_patterns' => [],
 
-'supports_credentials' => true,
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => true,
+
 ];

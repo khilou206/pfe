@@ -9,10 +9,12 @@ const Produits = () => {
     const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
     
-    const category = searchParams.get('categorie_produit') || 'all';
+
+    const category = searchParams.get('category') || 'all';
     const query = searchParams.get('search') || '';
 
-    // 1. Color Map: Hado homa l-alwan lli k-t-tbeddel bihom l-page
+    const API_BASE = "http://127.0.0.1:8000";
+
     const colorMap = {
         'all': '#1a1a1a',
         'T-SHIRT': '#ff3e6c',
