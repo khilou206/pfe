@@ -60,6 +60,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/save-design', [ProductController::class, 'saveFullDesign']);
 });
 
+
+Route::get('/proxy-image', function (Request $request) {
+    $url = $request->query('url');
+    $path = str_replace('/storage/', '', $url); 
+    
+    if (!Storage::disk('public')->exists($path)) return response('Not Found', 404);
+
+    $file = Storage::disk('public')->get($path);
+    $type = Storage::disk('public')->mimeType($path);
+
+    return response($file)->header('Content-Type', $type)
+                          ->header('Access-Control-Allow-Origin', '*'); // Hna fin k-t-7el CORS
+});
 /*
 |--------------------------------------------------------------------------
 | Admin Routes

@@ -9,13 +9,10 @@ const Produits = () => {
     const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
     
-    // Params matching Laravel: $request->category
     const category = searchParams.get('category') || 'all';
     const query = searchParams.get('search') || '';
 
     const API_BASE = "http://127.0.0.1:8000";
-
-    // Configuration dial l-alwan 3la 7sab smiyat l-categories
     const colorMap = {
         'all': '#1a1a1a',
         'T-SHIRT': '#ff3e6c',
