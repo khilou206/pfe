@@ -145,9 +145,4 @@ class ProductController extends Controller
             ], 500);
         }
     }
-    public function getCategories()
-    {
-        $categories = Mockup::distinct()->pluck('categorie_mockup');
-        return response()->json($categories);
-    }
 }

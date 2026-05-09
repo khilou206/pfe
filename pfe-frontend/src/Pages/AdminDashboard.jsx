@@ -274,8 +274,20 @@ const AdminDashboard = () => {
                                             <tr key={order.id}>
                                                 <td>#{order.reference_commande || order.id}</td>
                                                 <td>
-                                                    {order.utilisateur?.nom} <br/> 
-                                                    <small>{order.utilisateur?.email}</small>
+                                                     Nam:{order.utilisateur?.nom} <br/> 
+                                                     Email:<small>{order.utilisateur?.email}</small>
+                                                     Adresses:
+                                                    <div style={{ marginTop: '5px', fontSize: '12px', color: '#555', borderTop: '1px dashed #ccc' }}>
+              Adresses:<br/> {order.utilisateur?.adresses && order.utilisateur.adresses.length > 0 ? (
+            <>
+                Rue:📍 {order.utilisateur.adresses[0].adresse} <br/>
+               ville: 🏙️ {order.utilisateur.adresses[0].ville} <br/>
+                Code_postale:({order.utilisateur.adresses[0].code_postale})
+            </>
+        ) : (
+            <span style={{ color: 'red' }}>⚠️ No address found</span>
+        )}
+    </div>
                                                 </td>
                                                 <td>
                                                     {order.produits.map((p, index) => (
@@ -330,7 +342,7 @@ const AdminDashboard = () => {
                                                         className="status-select"
                                                     >
                                                         <option value="pending">En attente</option>
-                                                        <option value="paid">Payé</option>
+                                                
                                                         <option value="shipped">Expédié</option>
                                                         <option value="delivered">Livré</option>
                                                     </select>

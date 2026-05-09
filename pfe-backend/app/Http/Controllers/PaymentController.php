@@ -78,7 +78,7 @@ class PaymentController extends Controller
                     'id_utilisateur'     => auth()->id(),
                     'id_adresse'         => $adresse->id,
                     'total_price'        => $totalPrice,
-                    'status'             => 'pending',
+                    'status'             => 'paid',
                     'reference_commande' => $reference,
                 ]);
 

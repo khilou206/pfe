@@ -20,7 +20,7 @@ class AdminController extends Controller
 public function getDashboardStats() {
     try {
         // 1. المداخيل وعدد الطلبات باستعمال الموديل Commande
-        $totalRevenue = Commande::where('status', 'paid')->sum('total_price') ?? 0;
+        $totalRevenue = Commande::where('status', 'paid')->sum('total_price') ;
         $totalOrders = Commande::count();
 
         // 2. عدد الزبناء باستعمال الموديل Utilisateur
@@ -110,7 +110,7 @@ public function getAllOrders() {
     try {
         // جرب هادي هي الأولى، إيلا خدمات يعني المشكل كان غير فـ العلاقات (With)
       $orders = Commande::with([
-    'utilisateur',
+    'utilisateur.adresses',
     'produits.design' // 🔥 مهم بزاف
 ])->latest()->get();
         return response()->json(['status' => 'success', 'data' => $orders]);

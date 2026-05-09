@@ -17,6 +17,7 @@ import About from './Pages/About';
 import AdminDashboard from './Pages/AdminDashboard';
 import { AdminRoute, UserRoute } from './context/ProtectedRoute';
 
+
 function App() {
   return (
     <AuthProvider>
@@ -26,6 +27,8 @@ function App() {
           <Route path="/payment/success" element={<SuccessPage />} />
           <Route path="/payment/cancel" element={<CancelPage />} />
           <Route path="/product-design" element={<Design />} />
+          // App.js
+
 //==============================================================================
           <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
