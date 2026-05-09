@@ -16,7 +16,9 @@ protected $fillable = [
     'prix', 
     'is_public',
     'color',
-    'final_mockup'
+    'final_mockup',
+    'categorie',
+    'is_paid'
 ];
 
   

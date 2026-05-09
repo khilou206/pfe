@@ -359,7 +359,7 @@ const AdminDashboard = () => {
                     {activeTab === 'mockups' && (
                         <div className="add-mockup-section section-p1">
                             <h2>Ajouter un Nouveau Mockup</h2>
-                            <form className="admin-form" onSubmit={handleMockupSubmit} style={{ maxWidth: '600px', background: '#f4f4f4', padding: '20px', borderRadius: '10px' }}>
+                            <form className="admin-form" onSubmit={handleMockupSubmit}>
                                 
                                 <div className="input-group">
                                     <label>Catégorie:</label>

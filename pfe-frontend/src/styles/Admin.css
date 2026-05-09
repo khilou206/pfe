@@ -181,27 +181,35 @@
 }
 
 /* ---- Mockup Form ---- */
+.add-mockup-section { max-width: 580px; }
 .add-mockup-section h2 {
-    font-size: 22px;
+    font-size: 32px;
     color: #4d3087;
-    margin-bottom: 20px;
+    margin-bottom: 200px;
 }
 
 .admin-form {
-    max-width: 600px;
+    max-width: 880px;
     background: #f8f6fc;
     padding: 25px;
     border-radius: 14px;
     border: 1px solid #e4d9f5;
+  
+   
+    
+     background: #f4f4f4;
+      
+      
+
 }
 
 .input-group {
-    margin-bottom: 18px;
+    margin-bottom: 28px;
 }
 
 .input-group label {
     display: block;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     color: #4d3087;
     margin-bottom: 6px;
@@ -210,9 +218,9 @@
 .input-group input[type="text"],
 .input-group input[type="number"] {
     width: 100%;
-    padding: 10px 14px;
+    padding: 16px 16px;
     border: 1px solid #d0b8f0;
-    border-radius: 8px;
+    border-radius: 9px;
     font-size: 14px;
     color: #333;
     background: #fff;
