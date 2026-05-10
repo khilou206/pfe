@@ -58,9 +58,7 @@ const Produits = () => {
             if (category !== 'all') {
                 url += `category=${category}&`; 
             }
-        
             if (query) url += `search=${query}`;
-
             const prodRes = await axios.get(url);
             setProduits(prodRes.data);
         } catch (err) {
@@ -124,7 +122,6 @@ const Produits = () => {
                                     <div className="pp-footer">
                                         <span className="pp-price">{pro.prix} MAD</span>
                                         <div className="pp-actions">
-                                            <Link to={`/produit/${pro.id}`} className="pp-details-link">Détails</Link>
                                             <button className="pp-add-cart-btn" onClick={() => handleAddToCart(pro)}> + Panier </button>
                                         </div>
                                     </div>

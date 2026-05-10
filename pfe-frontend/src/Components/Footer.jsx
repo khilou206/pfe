@@ -21,9 +21,13 @@ const Footer = () => {
                     <h3 className="kp-ft-title">Contact <span className="kp-ft-line"></span></h3>
                     <div className="kp-ft-contact-box">
                         <div className="kp-ft-contact-item">
-                            <Mail size={14} className="kp-ft-icon" />
                             <a href="mailto:mohammedzahide3@gmail.com">pubkhalifi@gmail.com</a>
-                            <h4>+212 611 307 005</h4>
+                                <br />
+                            <h4>+212 611 307 005</h4><br />
+                            <h4>
+                                rue Abi Tayeb moutanabi Mag N10 Fes, Fès Jdid,
+                                Fès, Morocco 30000
+                            </h4>
                         </div>
                     </div>
                 </div>
