@@ -73,18 +73,24 @@ class ProductController extends Controller
 //========================================================================
     public function index(Request $request)
     {
-        $query = Produit::with(['mockup', 'design'])
-            ->where('is_public', true);
-        if ($request->has('category')) {
-            $category = $request->category;
-            $query->whereHas('mockup', function ($q) use ($category) {
-                $q->where('categorie_mockup', $category);
-            });
+        try {
+            $query = Produit::with(['mockup', 'design'])
+                ->where('is_public', true);
+            if ($request->has('category') && $request->category !== 'all') {
+                $categoryName = $request->category;
+                $query->whereHas('mockup', function ($q) use ($categoryName) {
+                    $q->where('categorie_mockup', $categoryName);
+                });
+            }
+            if ($request->has('search')) {
+                $query->where('nom_produit', 'like', '%' . $request->search . '%');
+            }
+            return response()->json($query->latest()->get());
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erreur Laravel: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json(
-            $query->latest()->get()
-        );
     }
 //===================================================================
     public function show($id)
