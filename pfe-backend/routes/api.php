@@ -62,14 +62,19 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/proxy-image', function (Request $request) {
     $url = $request->query('url');
     $path = str_replace('/storage/', '', $url); 
-    
-    if (!Storage::disk('public')->exists($path)) return response('Not Found', 404);
 
+    if (!Storage::disk('public')->exists($path)) return response('Not Found', 404);
     $file = Storage::disk('public')->get($path);
     $type = Storage::disk('public')->mimeType($path);
-
     return response($file)->header('Content-Type', $type)
-                          ->header('Access-Control-Allow-Origin', '*'); // Hna fin k-t-7el CORS
+                          ->header('Access-Control-Allow-Origin', '*'); 
+});
+Route::get('/download-logo/{file}', function ($file) {
+    $path = public_path('storage/logos/' . $file);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    return response()->download($path);
 });
 /*
 |--------------------------------------------------------------------------

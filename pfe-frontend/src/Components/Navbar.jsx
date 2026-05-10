@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingBag, Search, Sun, Moon, LogOut } from 'lucide-react';
-import '../styles/Header.css';
+import '../styles/Navbar.css';
 
 const Navbar = () => {
   const [theme, setTheme] = useState('light');
@@ -19,15 +19,8 @@ useEffect(() => {
   
   const navigate = useNavigate();
   const location = useLocation();
-
   const userJson = localStorage.getItem('user');
   const user = userJson ? JSON.parse(userJson) : null;
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-  };
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -40,7 +33,7 @@ useEffect(() => {
   return (
     <header className={`creative-header ${isScrolled ? 'scrolled' : ''}`}>
       <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <img src='imgs/about/logo.png' alt='logo' style={{ width: '140px', height: '130px'}}/>
+        <img src='imgs/about/logo.png' alt='logo' style={{ width: '120px', height: '110px'}}/>
         
       </Link>
 
@@ -51,14 +44,11 @@ useEffect(() => {
           </Link>
         ))}
       </nav>
-
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
-        <button onClick={toggleTheme} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', display: 'flex' }}>
+        <button  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', display: 'flex' }}>
           {theme === 'light' ? <Moon size={20} strokeWidth={1.5} /> : <Sun size={20} strokeWidth={1.5} />}
         </button>
-
         <Search size={20} style={{ cursor: 'pointer', color: 'var(--text-main)' }} onClick={() => setIsSearchOpen(!isSearchOpen)} />
-        
         <Link to="/panier" style={{ color: 'var(--text-main)', position: 'relative' }}>
           <ShoppingBag size={20} strokeWidth={1.5} />
         </Link>

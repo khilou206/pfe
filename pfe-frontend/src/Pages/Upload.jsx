@@ -8,7 +8,7 @@ const Upload = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [category, setCategory] = useState('');
-  const [availableCats, setAvailableCats] = useState([]); // الكاتيغوريز اللي عند الـ Admin
+  const [availableCats, setAvailableCats] = useState([]); 
   const navigate = useNavigate();
   const { setDesignData } = useContext(AuthContext);
 
@@ -36,8 +36,8 @@ const Upload = () => {
     const token = localStorage.getItem('auth_token');
     const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-    if (!token) return alert('المرجو تسجيل الدخول');
-    if (!file) return alert('المرجو اختيار تصميم');
+    if (!token) return alert('Veuillez vous connecter');
+    if (!file) return alert('Veuillez sélectionner un modèle.');
 
     const formData = new FormData();
     formData.append('image', file);
@@ -56,8 +56,8 @@ const Upload = () => {
         const data = {
           idDesign: res.data.id_design,
           category: category.toLowerCase(),
-          localImage: preview, // اللوغو للعرض الفوري
-          nomDesign: res.data.nom_design // السمية في السيرفر
+          localImage: preview, 
+          nomDesign: res.data.nom_design 
         };
 
         setDesignData(data);
@@ -65,25 +65,30 @@ const Upload = () => {
         navigate('/product-design');
       }
     } catch (err) {
-      alert("خطأ في الرفع: " + (err.response?.data?.error || "Error"));
+      alert(  " Erreur de chargement : " + (err.response?.data?.error || "Error"));
     }
   };
 
   return (
     <div className="upload-page">
       <div className="upload-card">
+        <img src="imgs/print.png" alt="" className='tofo' />
         <div className="drop-zone">
           <input type="file" accept="image/*" onChange={handleFileChange} id="upload" hidden />
           {preview ? (
             <img src={preview} alt="Preview" className="upload-preview" />
           ) : (
-            <div className="upload-placeholder"><span>📁</span><p>اسحب شعارك هنا</p></div>
+            <div className="upload-placeholder">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <p>Faites glisser votre logo ici</p></div>
           )}
-          <label htmlFor="upload" className="btn-upload">اختيار لوغو</label>
+          <label htmlFor="upload" className="btn-upload">Sélection du logo</label>
         </div>
 
         <div className="upload-category-wrapper">
-          <label className="upload-category-label">على ماذا تريد الطباعة؟</label>
+          <label className="upload-category-label">Que souhaitez-vous imprimer ?</label>
           <select value={category} onChange={(e) => setCategory(e.target.value)} className="upload-select">
             {availableCats.map((cat, index) => (
               <option key={index} value={cat}>{cat.toUpperCase()}</option>
@@ -91,7 +96,7 @@ const Upload = () => {
           </select>
         </div>
 
-        <button onClick={handleSend} className="btn-send">بدء التصميم الآن</button>
+        <button onClick={handleSend} className="btn-send">Commencez à concevoir dès maintenant</button>
       </div>
     </div>
   );

@@ -1,12 +1,35 @@
-// Pages/CancelPage.jsx
+import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/cancel.css'; 
 
-const CancelPage = () => (
-    <div style={{ textAlign: 'center', padding: '50px' }}>
-        <h1 style={{ color: 'red' }}>The process has been cancelled❌</h1>
-        <p>It appears you have cancelled your payment. You can return to your cart and try again.</p>
-        <Link to="/panier">Back to the basket</Link>
-    </div>
-);
+const CancelPage = () => {
+    return (
+        <div className="cancel-container">
+            <div className="cancel-card">
+                <div className="cancel-status-box animation-in">
+                    <div className="cancel-icon">✕</div>
+                    <h1>Paiement Annulé</h1>
+                    <p>
+                        Il semble que vous avez annulé l'opération de paiement. 
+                        Pas d'inquiétude, vos articles sont toujours dans votre panier.
+                    </p>
+                    
+                    <div className="cancel-action-buttons">
+                        <Link to="/panier" className="btn-cancel-primary">
+                            Retourner au panier
+                        </Link>
+                        <Link to="/" className="btn-cancel-secondary">
+                            Continuer mes achats
+                        </Link>
+                    </div>
+
+                    <div className="support-hint">
+                        Besoin d'aide ? <Link to="/contact">Contactez-nous</Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default CancelPage;

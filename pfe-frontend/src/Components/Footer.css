@@ -1,4 +1,3 @@
-/* --- Master Footer Fix (kp-ft-) --- */
 .kp-ft-main {
     background-color: var(--card-bg);
     padding: 5rem 6% 2rem 6%;
@@ -6,15 +5,13 @@
     margin-top: 4rem;
     width: 100%;
 }
-
 .kp-ft-container {
     display: grid;
-    grid-template-columns: 1.5fr 1.2fr 0.8fr 1.2fr; /* Layout nqi */
+    grid-template-columns: 1.5fr 1.2fr 0.8fr 1.2fr; 
     gap: 2rem;
     max-width: 100%;
     margin: 0 auto;
 }
-
 .kp-ft-logo {
     display: flex;
     align-items: center;
@@ -23,26 +20,22 @@
     font-size: 1.2rem;
     margin-bottom: 1.5rem;
 }
-
 .kp-ft-dot {
     width: 12px;
     height: 12px;
     background: var(--logo-gradient);
     border-radius: 3px;
 }
-
 .kp-ft-gradient {
     background: var(--logo-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-
 .kp-ft-text {
     color: var(--text-dim);
     font-size: 0.85rem;
     line-height: 1.8;
 }
-
 .kp-ft-title {
     font-size: 1rem;
     font-weight: 700;
@@ -50,7 +43,6 @@
     color: var(--text-main);
     text-transform: uppercase;
 }
-
 .kp-ft-line {
     display: block;
     width: 25px;
@@ -59,11 +51,9 @@
     margin-top: 8px;
     border-radius: 10px;
 }
-
 .kp-ft-contact-item {
     margin-bottom: 1.2rem;
 }
-
 .kp-ft-contact-item a {
     color: var(--text-main);
     text-decoration: none;
@@ -71,32 +61,26 @@
     display: block;
     margin-bottom: 4px;
 }
-
 .kp-ft-contact-item h4 {
     color: var(--text-dim);
     font-size: 0.85rem;
 }
-
 .kp-ft-links {
     list-style: none;
 }
-
 .kp-ft-links li {
     margin-bottom: 10px;
 }
-
 .kp-ft-links a {
     color: var(--text-dim);
     text-decoration: none;
     font-size: 0.9rem;
     transition: 0.3s;
 }
-
 .kp-ft-links a:hover {
     color: var(--text-main);
     padding-left: 5px;
 }
-
 .kp-ft-form {
     display: flex;
     background: var(--bg-color);
@@ -104,7 +88,6 @@
     border-radius: 50px;
     padding: 4px 4px 4px 15px;
 }
-
 .kp-ft-form input {
     background: none;
     border: none;
@@ -113,7 +96,6 @@
     width: 100%;
     font-size: 0.8rem;
 }
-
 .kp-ft-form button {
     background: var(--logo-gradient);
     border: none;
@@ -125,30 +107,24 @@
     align-items: center;
     justify-content: center;
 }
-
 .kp-ft-bottom {
     margin-top: 3rem;
     text-align: center;
 }
-
 .kp-ft-hr {
     border: none;
     border-top: 1px solid var(--border-color);
     margin-bottom: 1.5rem;
 }
-
 .kp-ft-copy {
     color: var(--text-dim);
     font-size: 0.8rem;
 }
-
-/* Responsive Fix */
 @media (max-width: 992px) {
     .kp-ft-container {
         grid-template-columns: 1fr 1fr;
     }
 }
-
 @media (max-width: 600px) {
     .kp-ft-container {
         grid-template-columns: 1fr;

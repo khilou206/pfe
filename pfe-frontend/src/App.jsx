@@ -16,11 +16,13 @@ import CancelPage from './Pages/CancelPage';
 import About from './Pages/About';
 import AdminDashboard from './Pages/AdminDashboard';
 import { AdminRoute, UserRoute } from './context/ProtectedRoute';
+import { CartProvider } from './context/CartContext';
 
 
 function App() {
   return (
     <AuthProvider>
+      <CartProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Auth />} />
@@ -47,6 +49,7 @@ function App() {
             </Route>
         </Routes>
       </BrowserRouter>
+      </CartProvider>
     </AuthProvider>
   );
 }

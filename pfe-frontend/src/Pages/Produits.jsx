@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { useCart } from '../context/CartContext'; 
 import '../styles/product.css'; 
 
 const Produits = () => {
     const [produits, setProduits] = useState([]);
-    const [categories, setCategories] = useState([]); // State jdid l categories
+    const [categories, setCategories] = useState([]); 
     const [loading, setLoading] = useState(true);
+    const { addToCart } = useCart();
     const [searchParams, setSearchParams] = useSearchParams();
     
 
@@ -14,6 +16,18 @@ const Produits = () => {
     const query = searchParams.get('search') || '';
 
     const API_BASE = "http://127.0.0.1:8000";
+
+    const handleAddToCart = (product) => {
+    const item = {
+        id: product.id,
+        nom_produit: product.nom_produit, 
+        prix: product.prix,
+        image: product.final_mockup, 
+        qte: 1
+    };
+    addToCart(item);
+    alert(`Produit ajouté: ${product.nom_produit}`);
+};
 
     const colorMap = {
         'all': '#1a1a1a',
@@ -23,21 +37,16 @@ const Produits = () => {
         'SWEATSHIRT': '#ffb703',
         'POCHETTE': '#06d6a0',
         'HORLOGE': '#ef476f',
-        'default': '#86868b' // Lon l-categories l-jdad
+        'default': '#86868b' 
     };
 
-    // 2. Function bach t-akhod l-lon 3la 7sab s-miya
     const getCategoryColor = (catName) => {
         return colorMap[catName.toUpperCase()] || colorMap['default'];
     };
-
     const activeCategoryColor = getCategoryColor(category);
-
     const isDarkColor = (color) => {
         return color === '#111' || color === '#1a1a1a';
     };
-
-    // 3. Fetch Categories & Products
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -60,15 +69,8 @@ const Produits = () => {
         window.scrollTo(0, 0);
     }, [category, query]);
 
-    const handleAddToCart = (e, product) => {
-        e.preventDefault();
-        e.stopPropagation();
-        alert(`Produit ajouté: ${product.nom_produit}`);
-    };
-
     return (
         <div className="pp-page-container">
-            {/* --- Category Navigation Dynamique --- */}
             <nav className="pp-category-nav">
                 <div className="pp-nav-wrapper">
                     {categories.map((catName) => {
@@ -84,8 +86,7 @@ const Produits = () => {
                                     background: isActive ? catColor : '',
                                     color: isActive ? '#fff' : ''
                                 }}
-                                onClick={() => setSearchParams({ categorie_produit: catName })}
-                            >
+                                onClick={() => setSearchParams({ categorie_produit: catName })}>
                                 {catName === 'all' ? 'TOUS' : catName}
                             </button>
                         );
@@ -94,15 +95,10 @@ const Produits = () => {
             </nav>
 
             <main className="pp-main-content">
-                {/* --- Header li kiy-beddel l-lon --- */}
                 <header 
                     className="pp-header-section"
-                    style={{ '--headerColor': activeCategoryColor }}
-                >
-                    <h1 
-                        className="pp-page-title"
-                        style={{ color: isDarkColor(activeCategoryColor) ? '#fff' : '#111' }}
-                    >
+                    style={{ '--headerColor': activeCategoryColor }}>
+                    <h1 className="pp-page-title"style={{ color: isDarkColor(activeCategoryColor) ? '#fff' : '#111' }}>
                         {query ? `Résultats: "${query}"` : category === 'all' ? 'Nos Produits' : `Nos ${category}`}
                     </h1>
                 </header>
@@ -126,7 +122,7 @@ const Produits = () => {
                                         <span className="pp-price">{pro.prix} MAD</span>
                                         <div className="pp-actions">
                                             <Link to={`/produit/${pro.id}`} className="pp-details-link">Détails</Link>
-                                            <button className="pp-add-cart-btn" onClick={(e) => handleAddToCart(e, pro)}> + Panier </button>
+                                            <button className="pp-add-cart-btn" onClick={() => handleAddToCart(pro)}> + Panier </button>
                                         </div>
                                     </div>
                                 </div>

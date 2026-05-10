@@ -6,8 +6,6 @@ const ProjectOwner = () => {
     <section className="h-owner-wrapper">
       <div className="h-owner-container">
         <div className="h-owner-card-glass">
-          
-          {/* Section Image m3a Deco */}
           <div className="h-owner-visual">
             <div className="h-visual-blob"></div>
             <div className="h-image-frame">
@@ -22,25 +20,21 @@ const ProjectOwner = () => {
               </div>
             </div>
           </div>
-
-          {/* Section Text & Info */}
           <div className="h-owner-details">
             <div className="h-intro-header">
               <div className="h-line-dec"></div>
               <span className="h-subtitle">VISIONNAIRE & FONDATEUR</span>
             </div>
-            
             <h2 className="h-title-name">
               M. Khalifi <span className="h-accent-dot">Yassine</span>
             </h2>
-            
             <p className="h-description">
-              Expert en stratégie visuelle et impression haute performance. 
-              À travers <strong>KHALIFI PUB</strong>, je redéfinis les standards 
-              de la communication graphique à Tanger avec une approche 
-              purement <span className="h-highlight">Pixel-Perfect</span>.
+              Fondateur de <strong>KHALIFI PUB</strong>, passionné par le design, 
+              l’impression publicitaire et l’innovation digitale. 
+              J’accompagne les entreprises et les marques à Fès dans la création 
+              d’une identité visuelle forte grâce à des solutions modernes, 
+              créatives et un service d’impression de haute qualité.
             </p>
-
             <div className="h-stats-mini">
               <div className="h-stat-item">
                 <strong>500+</strong>

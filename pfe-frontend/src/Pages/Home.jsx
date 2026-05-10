@@ -1,7 +1,9 @@
 import React from 'react';
 import { ArrowRight, MoveRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import '../styles/Home.css';
 import AboutLight from '../Components/WorkProcess';
+import Paragraph from '../Components/paragraph';
 
 const Home = () => {
   
@@ -50,21 +52,21 @@ const Home = () => {
         </p>
 
         <div style={{ display: 'flex', gap: '1.2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="btn-creative" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Link to='/upload' className="btn-creative" style={{ display: 'flex', alignItems: 'center', gap: '10px' , textDecoration :'none'}}>
             Lancer un projet <ArrowRight size={18} />
-          </button>
+          </Link>
           
-          <button style={{ 
+          <Link to='/propos' style={{ 
             background: 'none', border: '1px solid var(--border-color)', 
             color: 'var(--text-main)', padding: '1rem 2.2rem', borderRadius: '100px', 
-            fontWeight: '700', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' 
+            fontWeight: '700', fontSize: '0.8rem', textDecoration :'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' 
           }}>
             Portfolio <MoveRight size={18} />
-          </button>
+          </Link>
         </div>
       </div>
     </section>
-    
+    <Paragraph />
     <section className="premium-features">
   <div className="bento-grid">
     {/* Card 1 - Blue */}

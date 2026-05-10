@@ -10,11 +10,7 @@ const Auth = () => {
     
     const [loginData, setLoginData] = useState({ nom: "", mot_de_passe: "" });
     const [registerData, setRegisterData] = useState({ 
-        nom: "", 
-        email: "", 
-        tel: "", 
-        mot_de_passe: "", 
-        mot_de_passe_confirmation: "" 
+        nom: "", email: "", tel: "", mot_de_passe: "", mot_de_passe_confirmation: "" 
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -61,7 +57,6 @@ const Auth = () => {
         
             <div className="forms-container">
                 <div className="signin-signup">
-                    {/* فورم اللوجين */}
                     <form className="sign-in-form" onSubmit={handleLogin}>
                         <h2 className="title">Se connecter</h2>
                         <div className="input-field">
@@ -116,7 +111,7 @@ const Auth = () => {
                             <i className="fas fa-lock"></i>
                             <input type="password" placeholder="Confirmer" value={registerData.mot_de_passe_confirmation} onChange={(e) => setRegisterData({...registerData, mot_de_passe_confirmation: e.target.value})} required />
                         </div>
-                        {error && isSignUp && <div className="error" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
+                        {error && isSignUp && <div className="error" style={{color: 'voilet', marginBottom: '10px'}}>{error}</div>}
                         <input type="submit" className="btn" value="S'inscrire" />
                     </form>
                 </div>
@@ -128,18 +123,16 @@ const Auth = () => {
                         <h3>Nouveau ici ?</h3>
                         <p>Inscrivez-vous pour découvrir nos produits personnalisés.</p>
                         <button className="btn transparent" onClick={toggleMode}>S'inscrire</button>
-                        <button type="button" className="btn" style={{ backgroundColor: '#08e700e4',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
+                        <button type="button" className="btn" style={{ backgroundColor: 'voilet',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
                     </div>
-                    <img src="/imgs/log.svg" className="image" alt="" />
                 </div>
                 <div className="panel right-panel">
                     <div className="content">
                         <h3>Déjà membre ?</h3>
                         <p>Connectez-vous pour accéder à votre espace personnel.</p>
                         <button className="btn transparent" onClick={toggleMode}>Se connecter</button>
-                        <button type="button" className="btn" style={{ backgroundColor: '#7530f6',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
+                        <button type="button" className="btn" style={{ backgroundColor: 'voilet',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
                     </div>
-                    <img src="/imgs/register.svg" className="image" alt="" />
                 </div>
             </div>
         </div>

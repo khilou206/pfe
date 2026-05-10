@@ -302,13 +302,12 @@
 
 .modal-content {
     background: #fff;
-    padding: 30px;
     border-radius: 16px;
-    max-width: 500px;
+    max-width: 600px;
     width: 90%;
     position: relative;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    animation: modalIn 0.25s ease;
+    animation: modalIn 0.25s ease;overflow: auto;
 }
 
 @keyframes modalIn {

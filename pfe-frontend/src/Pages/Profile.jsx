@@ -43,7 +43,7 @@ const Profile = () => {
     const fetchDesigns = () => {
         if (!user || !token) return;
         setLoading(true);
-        axios.get(`${API_BASE_URL}/api/designs/${user.id}`, {
+        axios.get(`${API_BASE_URL}/api/user-designs/${user?.id}`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => setUserDesigns(res.data))

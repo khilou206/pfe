@@ -2,23 +2,24 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import '../styles/Checkout.css';
 
 const Checkout = () => {
     const location = useLocation();
     const { token } = useContext(AuthContext);
+    const { cart, total } = useCart(); 
     const [formData, setFormData] = useState({ city: '', zipcode: '', address: '' });
     const [loading, setLoading] = useState(false);
-    const items = location.state?.items || [];
-    const totalPrice = items.reduce((sum, item) => {
-        const price = parseFloat(item.price) || 0;
-        return sum + price;
-    }, 0);
+    const items = (location.state?.items && location.state.items.length > 0) 
+                  ? location.state.items 
+                  : cart;
+    const totalPrice = location.state?.total || total;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (items.length === 0) {
-            alert("السلة فارغة. يرجى إضافة منتجات أولاً.");
+            alert("Votre panier est vide.");
             return;
         }
 
@@ -28,25 +29,23 @@ const Checkout = () => {
                 city: formData.city,
                 zipcode: formData.zipcode,
                 address: formData.address,
-                items: items
+                items: items 
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
-
             if (response.data.url) {
                 window.location.href = response.data.url;
             }
         } catch (err) {
             console.error("Erreur Backend:", err.response?.data);
-            alert(err.response?.data?.message || "وقع مشكل أثناء معالجة الدفع");
+            alert(err.response?.data?.message || "Erreur lors du paiement");
         } finally {
             setLoading(false);
         }
     };
-
     return (
         <div className="cx">
             <div className="cx-inner">
@@ -60,13 +59,6 @@ const Checkout = () => {
                     <p className="cx-sub">Finalisez votre commande</p>
                 </div>
 
-                <div className="cx-steps">
-                    <div className="cx-step done"></div>
-                    <div className="cx-step done"></div>
-                    <div className="cx-step active"></div>
-                    <div className="cx-step"></div>
-                </div>
-
                 <div className="cx-order">
                     <div>
                         <p className="cx-ol">Commande</p>
@@ -76,8 +68,7 @@ const Checkout = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <p className="cx-lbl">Adresse de livraison</p>
-
+                    {/* ... (Inputs dyalk) ... */}
                     <div className="cx-row">
                         <div className="cx-field">
                             <label>Ville</label>
@@ -115,19 +106,17 @@ const Checkout = () => {
 
                     <div className="cx-total">
                         <span className="cx-total-lbl">Total à payer</span>
-                        <span className="cx-total-amt">{totalPrice} DH</span>
+                        <span className="cx-total-amt">{totalPrice.toFixed(2)} DH</span>
                     </div>
 
                     <button
                         type="submit"
                         className="cx-btn"
-                        disabled={loading}
+                        disabled={loading || items.length === 0}
                     >
                         <span>{loading ? "Traitement..." : "Confirmer & Payer →"}</span>
                     </button>
                 </form>
-
-                
             </div>
         </div>
     );

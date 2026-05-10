@@ -1,13 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Bach l-page mat-reloadi-ch
+import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, onAddToCart }) => {
-    // 1. Kat-chouf awwal image f l-array li jay mn Laravel
+    
     const mainImage = product.images?.[0]?.nom_image || 'default.png';
 
     return (
         <div className="pro">
-            {/* 2. Link f blast <a> bach t-koun navigation sari3a */}
             <Link to={`/product/${product.id_product}`}>
                 <img src={`/imgs/${mainImage}`} alt={product.nom_produit} />
             </Link>
@@ -26,8 +25,6 @@ const ProductCard = ({ product, onAddToCart }) => {
                 </div>
                 <h4>{product.prix} MAD</h4>
             </div>
-            
-            {/* 3. L-button dyal l-panier */}
             <button 
                 className="cart" 
                 onClick={(e) => onAddToCart(e, product)}

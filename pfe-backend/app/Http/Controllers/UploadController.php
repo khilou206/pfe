@@ -40,9 +40,6 @@ class UploadController extends Controller
         }
     }
 
-    /**
-     * Upload d'un nouveau design (Logo/Image)
-     */
     public function uploadDesign(Request $request)
     {
         try {
@@ -53,19 +50,13 @@ class UploadController extends Controller
 
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
-                
-                // Smiya dial l-fichié unique bach ma i-t-ghalltouch
                 $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                
-                // Stockage f disk public/logos
                 $path = $file->storeAs('logos', $fileName, 'public');
-
                 $design = Design::create([
-                    'nom_design'     => $fileName, // Ghadi t-khdem b had s-smiya f React m3a /storage/logos/
+                    'nom_design'     => $fileName, 
                     'date_upload'    => now(),
                     'id_utilisateur' => $request->id_utilisateur,
                 ]);
-
                 return response()->json([
                     'status'     => 'success',
                     'id_design'  => $design->id,

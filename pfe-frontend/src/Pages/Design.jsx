@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Design.css';
 import { Grab } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 
 
@@ -23,6 +24,7 @@ const Design = () => {
     const [selectedMockup, setSelectedMockup] = useState(null);
     const [title, setTitle] = useState('');
     const [selectedSize, setSelectedSize] = useState('M');
+    const { addToCart } = useCart(); 
     const [designState, setDesignState] = useState({ 
         width: 150,
         height: 150,
@@ -55,9 +57,9 @@ const Design = () => {
     const handleSave = async () => {
     if (!captureRef.current || !selectedMockup || !idDesign || !user?.id) {
         alert("بيانات ناقصة: تأكد من تسجيل الدخول واختيار التصميم");
-        console.log({ idDesign, userId: user?.id, mockupId: selectedMockup?.id });
         return;
     }
+
     try {
         const canvas = await html2canvas(captureRef.current, { 
             useCORS: true, 
@@ -80,20 +82,27 @@ const Design = () => {
             height: Math.round(designState.height),
             is_public: isPublic ? 1 : 0
         };
-        await axios.post('http://127.0.0.1:8000/api/save-design', payload, {
+
+        const response = await axios.post('http://127.0.0.1:8000/api/save-design', payload, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
+        const productForCart = {
+            id: response.data.data.id,
+            nom_produit: title || 'Produit Halla',
+            prix: selectedMockup.prix_base,
+            final_mockup: response.data.path || screenshot,  
+            taille: selectedSize,
+            color: designState.selectedColor,
+            qte: 1
+        };
+
+        addToCart(productForCart);
         navigate('/panier');
     } catch (err) {
-        if (err.response && err.response.status === 422) {
-            console.log("Validation Errors:", err.response.data.errors);
-            alert("خطأ في البيانات: " + JSON.stringify(err.response.data.errors));
-        } else {
-            alert("Erreur: " + err.message);
-        }
+        console.error("Erreur lors de la sauvegarde:", err);
+        alert("Erreur: " + (err.response?.data?.message || err.message));
     }
 };
-
     return (
         <div className="design-layout">
             <div className="preview-container">

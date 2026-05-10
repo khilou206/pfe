@@ -10,7 +10,6 @@ const About = () => {
   <ProjectOwner />
   <ServicesGallery />
   <AboutPremium />
-
   </>
 }
 
