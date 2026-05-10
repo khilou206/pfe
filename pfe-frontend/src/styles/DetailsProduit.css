@@ -1,0 +1,209 @@
+/* Container l-kbir */
+.product-details-page {
+    display: flex;
+    gap: 50px;
+    padding: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;margin-top: 60px;
+}
+
+/* JIHA DIAL L-TSAWER */
+.images-container {
+    flex: 1.2;
+}
+
+.main-image-wrapper {
+    background-color: #f7f7f7;
+    border-radius: 25px;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.main-image-wrapper img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply; /* Ila kan l-mockup b background bid */
+}
+
+.thumbnails-list {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.thumb-item {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    overflow: hidden;
+    background: #f7f7f7;
+    transition: 0.3s;
+}
+
+.thumb-item.active {
+    border-color: #ff4d8d;
+}
+
+.thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* JIHA DIAL L-MA3LOUMAT */
+.product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-tag {
+    color: #888;
+    text-transform: lowercase;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.product-title {
+    font-size: 36px;
+    color: #2d1b5e; /* Dak l-violi l-ghameq */
+    margin: 0 0 15px 0;
+    font-weight: 700;
+}
+
+.product-price {
+    font-size: 28px;
+    color: #ff4d8d; /* Pink */
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.reviews {
+    color: #ffb400;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* SELECTIONS */
+.selection-group {
+    margin-bottom: 25px;
+}
+
+.selection-group h4 {
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.size-options {
+    display: flex;
+    gap: 10px;
+}
+
+.size-btn {
+    padding: 8px 18px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.size-btn:hover {
+    border-color: #ff4d8d;
+    color: #ff4d8d;
+}
+
+.color-options {
+    display: flex;
+    gap: 12px;
+}
+
+.color-dot {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.color-dot.selected {
+    border-color: #ff4d8d;
+    transform: scale(1.1);
+}
+
+/* QUANTITY & BUTTONS */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    background: #f1f1f1;
+    width: fit-content;
+    border-radius: 30px;
+    padding: 5px 15px;
+    margin-bottom: 30px;
+}
+
+.q-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #ff4d8d;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.q-value {
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
+}
+
+.actions-btns {
+    display: flex;
+    gap: 15px;
+}
+
+.buy-now {
+    flex: 2;
+    background-color: #ff4d8d;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-to-cart {
+    flex: 1.2;
+    background-color: white;
+    color: #ff4d8d;
+    border: 2px solid #ff4d8d;
+    padding: 16px;
+    border-radius: 30px;text-decoration: none;text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buy-now:hover { opacity: 0.9; }
+.add-to-cart:hover { background-color: #fff0f5; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .product-details-page {
+        flex-direction: column;
+        padding: 20px;
+    }
+}

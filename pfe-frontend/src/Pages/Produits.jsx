@@ -31,13 +31,12 @@ const Produits = () => {
 
     const colorMap = {
         'all': '#1a1a1a',
-        'T-SHIRT': '#ff1149',
-        'CAHIER': '#9381ff',
-        'TAPIS SOURIS': '#00d1ff',
+        'T-SHIRT': '#ff3e6c',
+        'CHAIER': '#9381ff',
+        'TAPIS DE SOURIS': '#00d1ff',
         'SWEATSHIRT': '#ffb703',
         'POCHETTE': '#06d6a0',
-        'HORLOGE': '#eb7d96',
-        'HOODIE': '#ac47ef' ,
+        'HORLOGE': '#ef476f',
         'default': '#86868b' 
     };
 
@@ -49,26 +48,26 @@ const Produits = () => {
         return color === '#111' || color === '#1a1a1a';
     };
     useEffect(() => {
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const catRes = await axios.get(`${API_BASE}/api/available-categories`);
-            setCategories(['all', ...catRes.data]);
-            let url = `${API_BASE}/api/products?`;
-            if (category !== 'all') {
-                url += `category=${category}&`; 
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const catRes = await axios.get('http://127.0.0.1:8000/api/available-categories');
+                setCategories(['all', ...catRes.data]);
+                let url = `http://127.0.0.1:8000/api/products?`;
+                if (category !== 'all') url += `categorie=${category}&`;
+                if (query) url += `search=${query}`;
+                
+                const prodRes = await axios.get(url);
+                setProduits(prodRes.data);
+            } catch (err) {
+                console.error("Erreur fetching data", err);
             }
-            if (query) url += `search=${query}`;
-            const prodRes = await axios.get(url);
-            setProduits(prodRes.data);
-        } catch (err) {
-            console.error("Fetch error:", err);
-        }
-        setLoading(false);
-    };
+            setLoading(false);
+        };
 
-    fetchData();
-}, [category, query]);
+        fetchData();
+        window.scrollTo(0, 0);
+    }, [category, query]);
 
     return (
         <div className="pp-page-container">
@@ -87,7 +86,7 @@ const Produits = () => {
                                     background: isActive ? catColor : '',
                                     color: isActive ? '#fff' : ''
                                 }}
-                                onClick={() => setSearchParams({ category: catName })}>
+                                onClick={() => setSearchParams({ categorie_produit: catName })}>
                                 {catName === 'all' ? 'TOUS' : catName}
                             </button>
                         );
@@ -122,6 +121,7 @@ const Produits = () => {
                                     <div className="pp-footer">
                                         <span className="pp-price">{pro.prix} MAD</span>
                                         <div className="pp-actions">
+                                            <Link to={`/produit/${pro.id}`} className="pp-details-link">Détails</Link>
                                             <button className="pp-add-cart-btn" onClick={() => handleAddToCart(pro)}> + Panier </button>
                                         </div>
                                     </div>

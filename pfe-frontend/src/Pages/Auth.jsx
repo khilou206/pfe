@@ -123,7 +123,6 @@ const Auth = () => {
                         <h3>Nouveau ici ?</h3>
                         <p>Inscrivez-vous pour découvrir nos produits personnalisés.</p>
                         <button className="btn transparent" onClick={toggleMode}>S'inscrire</button>
-                        <button type="button" className="btn" style={{ backgroundColor: 'voilet',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
                     </div>
                 </div>
                 <div className="panel right-panel">
@@ -131,7 +130,6 @@ const Auth = () => {
                         <h3>Déjà membre ?</h3>
                         <p>Connectez-vous pour accéder à votre espace personnel.</p>
                         <button className="btn transparent" onClick={toggleMode}>Se connecter</button>
-                        <button type="button" className="btn" style={{ backgroundColor: 'voilet',margin:'10px'  }} onClick={() => navigate('/')}>Annuler</button>
                     </div>
                 </div>
             </div>

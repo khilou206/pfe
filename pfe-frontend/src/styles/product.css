@@ -198,14 +198,14 @@
     cursor: pointer;
     padding: 11px 16px;
     border-radius: 14px;
-    background:linear-gradient(135deg,#111111,#333333);
+    background:#250360;
     color: white;
     font-size: 0.82rem;
     font-weight: 700;
     transition: 0.3s ease;
 }
 .pp-add-cart-btn:hover{
-    background:linear-gradient(135deg,#ff3e6c,#ff6b8a);
+    background-color: #522f8e;
     transform:translateY(-2px) scale(1.03);
     box-shadow:0 15px 30px rgba(255,62,108,0.22);
 }
