@@ -10,7 +10,7 @@ const AboutLight = () => {
       <div className="l-about-container">
         <div className="l-about-visual">
           <div className="l-image-wrapper">
-            <img src="imgs/about/logo.png" alt="Khalifi Pub Tanger" className="l-main-img" />
+            <img src="imgs/about/logo.png" alt="Khalifi Pub Fès" className="l-main-img" />
           </div>
         </div>
 
@@ -23,7 +23,7 @@ const AboutLight = () => {
           </h2>
 
           <p className="l-description">
-            Spécialistes en communication visuelle à <strong>Tanger</strong>, nous accompagnons les entreprises 
+            Spécialistes en communication visuelle à <strong>Fès</strong>, nous accompagnons les entreprises 
             dans leur rayonnement local. De l'habillage de flottes automobiles à la signalétique lumineuse, 
             notre précision est notre signature.
           </p>
@@ -33,7 +33,7 @@ const AboutLight = () => {
               <span className="l-check">✦</span>
               <div>
                 <h4>Matériaux Certifiés</h4>
-                <p>Résistance extrême au climat de Tanger.</p>
+                <p>Résistance extrême au climat de Fès.</p>
               </div>
             </div>
             
