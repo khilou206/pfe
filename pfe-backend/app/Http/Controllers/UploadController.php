@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class UploadController extends Controller
 {
-    /**
-     * Récupérer les catégories de mockups (distinctes)
-     */
+//-----------------------------------------------------------------------------
     public function getAvailableCategories()
     {
         try {
@@ -22,32 +20,26 @@ class UploadController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-    /**
-     * Récupérer les designs d'un utilisateur authentifié
-     */
+//------------------------------------------------------------------------------------
     public function getUserDesigns(Request $request)
     {
         try {
-            // Khdemna b $request->user() bach n-dodmno l-id dialli m-connecté
             $designs = Design::where('id_utilisateur', $request->user()->id)
                              ->latest()
                              ->get();
-
             return response()->json($designs);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Erreur lors de la récupération des designs'], 500);
         }
     }
-
+//--------------------------------------------------------------------------------------
     public function uploadDesign(Request $request)
     {
         try {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:10240', // 10MB max
+                'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:10240',
                 'id_utilisateur' => 'required'
             ]);
-
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
                 $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -61,21 +53,16 @@ class UploadController extends Controller
                     'status'     => 'success',
                     'id_design'  => $design->id,
                     'nom_design' => $fileName,
-                    'full_url'   => asset('storage/logos/' . $fileName) // Link lli t-qder t-khdem bih f React nichan
+                    'full_url'   => asset('storage/logos/' . $fileName) 
                 ], 201);
             }
-
             return response()->json(['error' => 'Aucun fichier trouvé'], 400);
-
         } catch (\Exception $e) {
             Log::error("Upload Error: " . $e->getMessage());
             return response()->json(['error' => 'Erreur d\'upload: ' . $e->getMessage()], 500);
         }
     }
-
-    /**
-     * Récupérer les mockups par catégorie
-     */
+//--------------------------------------------------------------------------------------
     public function getMockupsByCat($cat)
     {
         try {
@@ -85,7 +72,6 @@ class UploadController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
     public function destroy($id)
     {
         try {
@@ -94,7 +80,6 @@ class UploadController extends Controller
             if ($design->nom_design) {
                 Storage::disk('public')->delete('logos/' . $design->nom_design);
             }
-
             $design->delete();
             return response()->json(['message' => 'Design supprimé avec succès'], 200);
         } catch (\Exception $e) {

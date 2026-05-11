@@ -97,8 +97,8 @@ const Profile = () => {
                         <span className="page-title-badge">{user?.role || 'UI/UX Designer'}</span>
                     </div>
                 </div>
-                    <Link to="/upload" >
-                        <img src='/imgs/up.png' className="h-icon-btn" />
+                    <Link to="/upload" className="h-icon-btn5">
+                        <img src='/imgs/up.png'  />
                     </Link>
             </header>
 
@@ -137,7 +137,7 @@ const Profile = () => {
                                 </div>
                                 <div className="data-item border-orange">
                                     <h3 className="value">{userDesigns.length}</h3>
-                                    <p className="title">Assets Saved</p>
+                                    <p className="title">Designs Sauvgardé</p>
                                 </div>
                                 <div className="data-item border-green">
                                     <h3 className="value">{userOrders.length}</h3>
@@ -150,7 +150,7 @@ const Profile = () => {
                     {/* VIEW: DESIGNS */}
                     {!loading && activeTab === 'design' && (
                         <div className="h-designs-view">
-                            <h2 className="section-title">Mes Assets</h2>
+                            <h2 className="section-title">Mes Designs</h2>
                             <div className="h-designs-grid">
                                 {userDesigns.map(design => (
                                     <div key={design.id} className="h-design-card">
@@ -208,8 +208,8 @@ const Profile = () => {
                             <h2 className="section-title">Mes Commandes</h2>
                             <div className="h-table-card">
                                 <table className="h-custom-table">
-                                    <thead>
-                                        <tr>
+                                    <thead >
+                                        <tr className='cc'>
                                             <th>Ref</th>
                                             <th>Produit</th>
                                             <th>Total</th>

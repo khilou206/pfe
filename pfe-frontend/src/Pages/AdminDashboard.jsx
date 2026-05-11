@@ -194,7 +194,6 @@ const AdminDashboard = () => {
 
                 {/* Main Content */}
                 <div className="admin-content" style={{ flex: 1, marginLeft: '50px' }}>
-
                     {activeTab === 'bord' && (
                         <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                             <div className="stat-card"><h3>{stats?.total_revenue || 0} DH</h3><p>Revenu Total</p></div>
@@ -214,7 +213,6 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     )}
-
                     {activeTab === 'commandes' && (
                         <div className="section-p1">
                             <h2>Gestion des Commandes</h2>
@@ -227,7 +225,21 @@ const AdminDashboard = () => {
                                         {orders.map(order => (
                                             <tr key={order.id}>
                                                 <td>#{order.reference_commande || order.id}</td>
-                                                <td>Nam:{order.utilisateur?.nom} <br/>Email:<small>{order.utilisateur?.email}</small></td>
+                                                <td>Nam:{order.utilisateur?.nom} <br/>Email:<small>{order.utilisateur?.email}</small>
+                                                Adresses:
+                                        <div style={{ marginTop: '5px', fontSize: '12px', color: '#555', borderTop: '1px dashed #ccc' }}>
+                                            Adresses:<br/> {order.utilisateur?.adresses && order.utilisateur.adresses.length > 0 ? (
+                                                        <>
+                                                            Rue:📍 {order.utilisateur.adresses[0].adresse} <br/>
+                                                        ville: 🏙️ {order.utilisateur.adresses[0].ville} <br/>
+                                                            Code_postale:({order.utilisateur.adresses[0].code_postale})
+                                                        </>
+                                                    ) : (
+                                                        <span style={{ color: 'red' }}>⚠️ No address found</span>
+                                                    )}
+                                                </div>
+                                                </td>
+                                                
                                                 <td>
                                                     {order.produits.map((p, index) => (
                                                         <div key={index} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>

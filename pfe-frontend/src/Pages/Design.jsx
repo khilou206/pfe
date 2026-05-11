@@ -56,10 +56,9 @@ const Design = () => {
 
     const handleSave = async () => {
     if (!captureRef.current || !selectedMockup || !idDesign || !user?.id) {
-        alert("بيانات ناقصة: تأكد من تسجيل الدخول واختيار التصميم");
+        alert('Données incomplètes : assurez-vous d’être connecté et d’avoir sélectionné un modèle.');
         return;
     }
-
     try {
         const canvas = await html2canvas(captureRef.current, { 
             useCORS: true, 
@@ -90,12 +89,11 @@ const Design = () => {
             id: response.data.data.id,
             nom_produit: title || 'Produit Halla',
             prix: selectedMockup.prix_base,
-            final_mockup: response.data.path || screenshot,  
+            image: response.data.data.final_mockup ,  
             taille: selectedSize,
             color: designState.selectedColor,
             qte: 1
         };
-
         addToCart(productForCart);
         navigate('/panier');
     } catch (err) {
