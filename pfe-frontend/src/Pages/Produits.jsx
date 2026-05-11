@@ -10,24 +10,24 @@ const Produits = () => {
     const [loading, setLoading] = useState(true);
     const { addToCart } = useCart();
     const [searchParams, setSearchParams] = useSearchParams();
-    
 
-    const category = searchParams.get('category') || 'all';
+    // Kant 3ndek 'category', ghadi n-redouha 'categorie_produit' bach t-matchi l-URL
+    const currentCategory = searchParams.get('categorie_produit') || 'all';
     const query = searchParams.get('search') || '';
 
     const API_BASE = "http://127.0.0.1:8000";
 
     const handleAddToCart = (product) => {
-    const item = {
-        id: product.id,
-        nom_produit: product.nom_produit, 
-        prix: product.prix,
-        image: product.final_mockup, 
-        qte: 1
+        const item = {
+            id: product.id,
+            nom_produit: product.nom_produit, 
+            prix: product.prix,
+            image: product.final_mockup, 
+            qte: 1
+        };
+        addToCart(item);
+        alert(`Produit ajouté: ${product.nom_produit}`);
     };
-    addToCart(item);
-    alert(`Produit ajouté: ${product.nom_produit}`);
-};
 
     const colorMap = {
         'all': '#1a1a1a',
@@ -43,18 +43,23 @@ const Produits = () => {
     const getCategoryColor = (catName) => {
         return colorMap[catName.toUpperCase()] || colorMap['default'];
     };
-    const activeCategoryColor = getCategoryColor(category);
+
+    const activeCategoryColor = getCategoryColor(currentCategory);
+
     const isDarkColor = (color) => {
         return color === '#111' || color === '#1a1a1a';
     };
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const catRes = await axios.get('http://127.0.0.1:8000/api/available-categories');
+                const catRes = await axios.get(`${API_BASE}/api/available-categories`);
                 setCategories(['all', ...catRes.data]);
-                let url = `http://127.0.0.1:8000/api/products?`;
-                if (category !== 'all') url += `categorie=${category}&`;
+
+                let url = `${API_BASE}/api/products?`;
+                // T-akked men l-backend wach kaysmmiha 'categorie' aw 'categorie_produit'
+                if (currentCategory !== 'all') url += `categorie=${currentCategory}&`;
                 if (query) url += `search=${query}`;
                 
                 const prodRes = await axios.get(url);
@@ -67,7 +72,7 @@ const Produits = () => {
 
         fetchData();
         window.scrollTo(0, 0);
-    }, [category, query]);
+    }, [currentCategory, query]); 
 
     return (
         <div className="pp-page-container">
@@ -75,7 +80,7 @@ const Produits = () => {
                 <div className="pp-nav-wrapper">
                     {categories.map((catName) => {
                         const catColor = getCategoryColor(catName);
-                        const isActive = category === catName;
+                        const isActive = currentCategory === catName;
 
                         return (
                             <button 
@@ -86,6 +91,7 @@ const Produits = () => {
                                     background: isActive ? catColor : '',
                                     color: isActive ? '#fff' : ''
                                 }}
+                                // Set l-URL parameter b-nefs smit l-variable (categorie_produit)
                                 onClick={() => setSearchParams({ categorie_produit: catName })}>
                                 {catName === 'all' ? 'TOUS' : catName}
                             </button>
@@ -98,8 +104,8 @@ const Produits = () => {
                 <header 
                     className="pp-header-section"
                     style={{ '--headerColor': activeCategoryColor }}>
-                    <h1 className="pp-page-title"style={{ color: isDarkColor(activeCategoryColor) ? '#fff' : '#111' }}>
-                        {query ? `Résultats: "${query}"` : category === 'all' ? 'Nos Produits' : `Nos ${category}`}
+                    <h1 className="pp-page-title" style={{ color: isDarkColor(activeCategoryColor) ? '#fff' : '#111' }}>
+                        {query ? `Résultats: "${query}"` : currentCategory === 'all' ? 'Nos Produits' : `Nos ${currentCategory}`}
                     </h1>
                 </header>
 
@@ -113,7 +119,7 @@ const Produits = () => {
                         produits.map((pro) => (
                             <div className="pp-product-card" key={pro.id}>
                                 <div className="pp-image-holder">
-                                    <img src={`http://127.0.0.1:8000${pro.final_mockup}`} alt={pro.nom_produit} />
+                                    <img src={`${API_BASE}${pro.final_mockup}`} alt={pro.nom_produit} />
                                 </div>
                                 <div className="pp-info-holder">
                                     <span className="pp-tag">{pro.categorie_produit}</span>

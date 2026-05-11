@@ -71,27 +71,35 @@ class ProductController extends Controller
         return response()->json($products);
     }
 //========================================================================
-    public function index(Request $request)
-    {
-        try {
-            $query = Produit::with(['mockup', 'design'])
-                ->where('is_public', true);
-            if ($request->has('category') && $request->category !== 'all') {
-                $categoryName = $request->category;
-                $query->whereHas('mockup', function ($q) use ($categoryName) {
-                    $q->where('categorie_mockup', $categoryName);
-                });
-            }
-            if ($request->has('search')) {
-                $query->where('nom_produit', 'like', '%' . $request->search . '%');
-            }
-            return response()->json($query->latest()->get());
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Erreur Laravel: ' . $e->getMessage()
-            ], 500);
+public function index(Request $request)
+{
+    try {
+        $query = Produit::with(['mockup', 'design'])
+            ->where('is_public', true);
+
+        if ($request->has('categorie') && $request->categorie !== 'all') {
+            $categoryName = $request->categorie;
+            
+            $query->whereHas('mockup', function ($q) use ($categoryName) {
+                $q->where('categorie_mockup', $categoryName);
+            });
         }
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where('nom_produit', 'like', '%' . $searchTerm . '%');
+        }
+
+        // 4. Njibo l-data m-ratba (l-jdid howa l-owl)
+        $produits = $query->latest()->get();
+
+        return response()->json($produits);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Erreur Laravel: ' . $e->getMessage()
+        ], 500);
     }
+}
 //===================================================================
     public function show($id)
     {
