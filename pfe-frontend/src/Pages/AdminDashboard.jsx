@@ -302,7 +302,7 @@ const AdminDashboard = () => {
                                                 <td><img src={`http://127.0.0.1:8000${product.final_mockup}`} alt="img" style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} /></td>
                                                 <td>{product.nom_produit}</td>
                                                 <td>{product.prix} DH</td>
-                                                <td>{product.categorie_nom}</td>
+                                                <td>{product.mockup?.categorie_mockup || 'Sans Catégorie'}</td>
                                                 <td>
                                                     <button onClick={() => handleDeleteProduct(product.id)} style={{ backgroundColor: '#ff4d4d', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}>
                                                         Supprimer

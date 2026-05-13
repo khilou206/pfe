@@ -56,9 +56,7 @@ const Produits = () => {
             try {
                 const catRes = await axios.get(`${API_BASE}/api/available-categories`);
                 setCategories(['all', ...catRes.data]);
-
                 let url = `${API_BASE}/api/products?`;
-                // T-akked men l-backend wach kaysmmiha 'categorie' aw 'categorie_produit'
                 if (currentCategory !== 'all') url += `categorie=${currentCategory}&`;
                 if (query) url += `search=${query}`;
                 
