@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+//---------------------------------------------------------------------------------------------------
     public function login(Request $request)
     {
         $request->validate([
             'nom' => 'required|string',
             'mot_de_passe' => 'required|string'
         ]);
-
         $user = Utilisateur::where('nom', $request->nom)->first();
 
         if (!$user || !Hash::check($request->mot_de_passe, $user->mot_de_passe)) {
@@ -24,9 +24,7 @@ class AuthController extends Controller
                 'message' => 'Nom ou mot de passe incorrect'
             ], 401);
         }
-
         $token = $user->createToken('auth_token')->plainTextToken;
-
         return response()->json([
             'status' => 'success',
             'user' => $user, 
@@ -34,7 +32,7 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
-
+//---------------------------------------------------------------------------------------------------
     public function register(Request $request)
     {
         $fields = $request->validate([
@@ -60,7 +58,7 @@ class AuthController extends Controller
             'access_token' => $token,
         ], 201);
     }
-
+//---------------------------------------------------------------------------------------------------
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

@@ -12,12 +12,8 @@ use App\Http\Controllers\{
     UploadController
 };
 
+//---------------------------------------(Routes Public)-----------------------------------------------------
 
-/*
-|--------------------------------------------------------------------------
-| Public Routes
-|--------------------------------------------------------------------------
-*/
 Route::get('/admin/mockups', function() {
     return \App\Models\Mockup::all();
 });
@@ -27,11 +23,8 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/products/category/{category}', [ProductController::class, 'getByCategory']);
 
-/*
-|--------------------------------------------------------------------------
-| Protected Routes (User)
-|--------------------------------------------------------------------------
-*/
+//-------------------------------------( Routes protected )--------------------------------------------------------------
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) { return $request->user(); });
@@ -58,7 +51,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/save-design', [ProductController::class, 'saveFullDesign']);
 });
 
-
 Route::get('/proxy-image', function (Request $request) {
     $url = $request->query('url');
     $path = str_replace('/storage/', '', $url); 
@@ -76,11 +68,9 @@ Route::get('/download-logo/{file}', function ($file) {
     }
     return response()->download($path);
 });
-/*
-|--------------------------------------------------------------------------
-| Admin Routes
-|--------------------------------------------------------------------------
-*/
+
+//---------------------------------------( Routes d'admin )------------------------------------------------------------
+
 Route::middleware(['auth:sanctum', 'checkAdmin'])->prefix('admin')->group(function () {
     
     Route::get('/stats', [AdminController::class, 'getDashboardStats']);

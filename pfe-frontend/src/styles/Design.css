@@ -183,3 +183,7 @@
     z-index: 2;
     pointer-events: none;
 }
+
+.react-draggable {
+    cursor: move;
+}

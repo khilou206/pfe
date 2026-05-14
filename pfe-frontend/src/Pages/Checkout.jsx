@@ -22,7 +22,6 @@ const Checkout = () => {
             alert("Votre panier est vide.");
             return;
         }
-
         setLoading(true);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/payment', {
@@ -68,7 +67,6 @@ const Checkout = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    {/* ... (Inputs dyalk) ... */}
                     <div className="cx-row">
                         <div className="cx-field">
                             <label>Ville</label>

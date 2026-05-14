@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+//---------------------------------------------------------------------------------------------------
     public function saveFullDesign(Request $request)
     {
         $request->validate([
@@ -55,7 +56,6 @@ class ProductController extends Controller
                 'message' => 'Design enregistré avec succès !',
                 'data'    => $produit
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erreur serveur: ' . $e->getMessage()
@@ -88,12 +88,8 @@ public function index(Request $request)
             $searchTerm = $request->search;
             $query->where('nom_produit', 'like', '%' . $searchTerm . '%');
         }
-
-        // 4. Njibo l-data m-ratba (l-jdid howa l-owl)
         $produits = $query->latest()->get();
-
         return response()->json($produits);
-
     } catch (\Exception $e) {
         return response()->json([
             'error' => 'Erreur Laravel: ' . $e->getMessage()
@@ -123,7 +119,6 @@ public function index(Request $request)
             }
             if ($produit->final_mockup) {
                 $imagePath = public_path($produit->final_mockup);
-
                 if (File::exists($imagePath)) {
                     File::delete($imagePath);
                 }
@@ -138,6 +133,7 @@ public function index(Request $request)
             ], 500);
         }
     }
+//---------------------------------------------------------------------------------------------------
     public function getUserProducts(Request $request)
     {
         try {

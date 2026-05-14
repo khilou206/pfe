@@ -136,13 +136,22 @@ const Design = () => {
 
 )}
                     <Rnd
-                        bounds="parent"
-                        size={{ width: designState.width, height: designState.height }}
-                       position={{ x: designState.x, y: designState.y }}
-                        onDragStop={(e, d) => 
+                        size={{
+                            width: designState.width,
+                            height: designState.height
+                        }}
+                        dragGrid={[1,1]}
+                        resizeGrid={[1,1]}
+                        default={{
+                            x: designState.x,
+                            y: designState.y,
+                            width: designState.width,
+                            height: designState.height
+                        }}
+                        onDrag={(e, d) => 
                             setDesignState(prev => ({ ...prev, x: d.x, y: d.y }))
                         }
-                        onResizeStop={(e, dir, ref, delta, pos) => {
+                        onResize={(e, dir, ref, delta, pos) => {
                             setDesignState(prev => ({
                                 ...prev,
                                 width: parseInt(ref.style.width),
@@ -155,8 +164,7 @@ const Design = () => {
                         <img 
                             src={localImage} 
                             alt="Logo" 
-                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                        />
+                            style={{ width: '100%', height: 'auto', objectFit: 'cover' }}/>
                     </Rnd>
                 </div>
             </div>
@@ -166,14 +174,13 @@ const Design = () => {
                 <div className="control-group">
                     <label>Taille du Logo: {designState.width}px</label>
                     <input 
-                        type="range" min="50" max="300" 
+                        type="range" min="50" max="500" 
                         value={designState.width} 
                         onChange={(e) => setDesignState(prev => ({ 
                             ...prev, 
                             width: parseInt(e.target.value), 
                             height: parseInt(e.target.value) 
-                        }))}
-                    />
+                        }))}/>
                 </div>
                 <div className="control-group">
                     <label>Couleurs disponibles :</label>
@@ -204,8 +211,7 @@ const Design = () => {
                             <button
                                 key={size}
                                 onClick={() => setSelectedSize(size)}
-                                className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                            >
+                                className={`size-btn ${selectedSize === size ? 'active' : ''}`}>
                                 {size}
                             </button>
                         ))}

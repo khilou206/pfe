@@ -77,6 +77,32 @@ const Profile = () => {
         .finally(() => setLoading(false));
     };
 
+    const handleDelete = async (designId) => {
+    if (!token) {
+        alert("Session expirée, connectez-vous à nouveau.");
+        return;
+    }
+    if (window.confirm("Voulez-vous vraiment supprimer ce design ?")) {
+        try {
+            await axios.delete(`${API_BASE_URL}/api/design/${designId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setUserDesigns(prevDesigns => prevDesigns.filter(design => design.id !== designId));
+            alert("Design supprimé avec succès !!");
+            
+        } catch (error) {
+            console.error("Error deleting design:", error);
+            if (error.response?.status === 401) {
+                alert("Vous n'êtes pas autorisé à supprimer ce design.");
+            } else {
+                alert("Erreur lors de la suppression.");
+            }
+        }
+    }
+};
+
     // --- Lifecycle ---
     useEffect(() => {
         if (activeTab === 'design') fetchDesigns();
@@ -158,7 +184,11 @@ const Profile = () => {
                                             <img src={`http://127.0.0.1:8000/storage/logos/${design.nom_design}`} alt="Design" />
                                         </div>
                                         <div className="h-card-actions">
-                                            <button className="del-btn">Supprimer</button>
+                                            <button 
+                                                className="del-btn" 
+                                                onClick={() => handleDelete(design.id)}>
+                                                Supprimer
+                                            </button>
                                         </div>
                                     </div>
                                 ))}

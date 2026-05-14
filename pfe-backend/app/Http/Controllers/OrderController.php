@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+//---------------------------------------------------------------------------------------------------
     public function getUserOrders()
     {
         $userId = Auth::id();
@@ -24,38 +25,22 @@ class OrderController extends Controller
             }
         ])
         ->where('id_utilisateur', $userId)
-        ->latest() // newest orders first
+        ->latest() 
         ->get();
-
-        // 📤 Return structured response
         return response()->json([
             'status' => 'success',
             'data' => $orders
         ]);
     }
-
-    /**
-     * =========================================================
-     * 🛠️ ADMIN - GET ALL ORDERS (FULL SYSTEM VIEW)
-     * =========================================================
-  
-     */
+//---------------------------------------------------------------------------------------------------
     public function getAllOrdersForAdmin()
     {
         $orders = Commande::with([
-            // 👤 Client info (only needed fields)
             'utilisateur:id,nom,email',
-
-            // 📦 Products inside each order
             'produits' => function ($query) {
                 $query->with([
-                    // 🖼️ Mockup related to product
                     'mockup',
-
-                    // 🎨 Design used in product
                     'design',
-
-                    // 🧩 Images + their design relation
                     'images.design'
                 ]);
             }
